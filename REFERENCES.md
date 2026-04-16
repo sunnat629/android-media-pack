@@ -19,7 +19,7 @@ Curated list of trusted sources consulted when authoring and auditing skills in 
 - Compose UI for Media3: https://developer.android.com/media/media3/ui/compose
 - Android Developers Blog, Media3 1.9.0 announcement: https://android-developers.googleblog.com/2025/12/media3-190-whats-new.html
 - Android Developers Blog, Media3 PreloadManager deep dive: https://android-developers.googleblog.com/2025/09/a-deep-dive-into-media3-preloadmanager.html
-- androidx/media source: https://github.com/androidx/media
+- **androidx/media** (canonical source): https://github.com/androidx/media
 - androidx/media issue tracker: https://github.com/androidx/media/issues
 - IMA DAI for ExoPlayer: https://developers.google.com/ad-manager/dynamic-ad-insertion/sdk/android/get-started/exoplayer-extension
 - IMA CSAI for ExoPlayer: https://developers.google.com/interactive-media-ads/docs/sdks/android/client-side/get-started/exoplayer-extension
@@ -35,18 +35,54 @@ Curated list of trusted sources consulted when authoring and auditing skills in 
 
 ## Reference repositories (production-grade implementations)
 
-These are production or production-adjacent projects that are safe to consult for patterns. Cross-check every citation against the canonical Media3 docs before adopting.
+These are production or production-adjacent projects that are safe to consult for patterns. Cross-check every citation against the canonical Media3 docs before adopting. Older projects may still reference `com.google.android.exoplayer2.*`, treat those as migration targets not as RIGHT patterns.
+
+### Google and community-curated skills
 
 - **android/skills** — Google's canonical skills repository. Canonical layout, anatomy, and examples for agent skills.
   https://github.com/android/skills
-- **anilbeesetti/NextPlayer** — Modern Android video player built on Media3. Uses Jetpack Compose, multi-module architecture, and covers subtitle rendering, audio tracks, PiP, and video library indexing.
+
+### Media3 and ExoPlayer reference apps
+
+- **anilbeesetti/NextPlayer** — Modern Android video player built on Media3. Jetpack Compose, multi-module architecture, subtitle rendering, audio tracks, PiP, video library indexing.
   https://github.com/anilbeesetti/nextplayer
-- **maxrave-dev/SimpMusic** — YouTube Music client built on Media3 `MediaSessionService`. Reference for background audio, lock-screen transport, playlists, and notification handling in Compose.
+- **maxrave-dev/SimpMusic** — YouTube Music client built on Media3 `MediaSessionService`. Background audio, lock-screen transport, playlists, notification handling in Compose.
   https://github.com/maxrave-dev/SimpMusic
-- **CarGuo/GSYVideoPlayer** — Long-running Chinese-community Android video player. Reference for custom renderer trees, gesture overlays, and floating window playback. Legacy ExoPlayer patterns live here, cross-check carefully against Media3 1.9.0.
+- **CarGuo/GSYVideoPlayer** — Long-running Chinese-community Android video player. Custom renderer trees, gesture overlays, floating window playback. Legacy ExoPlayer patterns live here, cross-check against Media3 1.9.0.
   https://github.com/CarGuo/GSYVideoPlayer
-- **Doikki/DKVideoPlayer** — Lightweight Android video player with a customizable controller. Reference for compact player UI decomposition.
+- **Doikki/DKVideoPlayer** — Lightweight Android video player with a customizable controller. Compact player UI decomposition.
   https://github.com/Doikki/DKVideoPlayer
+- **brianwernick/ExoMedia** — Mature ExoPlayer wrapper library. Reference for a lightweight high-level API over the low-level Media3 primitives. Useful as a pattern, not a dependency.
+  https://github.com/brianwernick/ExoMedia
+- **yangchaojiang/yjPlay** — Video player library (Chinese community). Legacy ExoPlayer, reference for player skin / controller decomposition.
+  https://github.com/yangchaojiang/yjPlay
+- **MasayukiSuda/ExoPlayerFilter** — ExoPlayer integration with GPUImage-style GL filters. Reference for custom `GlEffect` chains and video filter pipelines.
+  https://github.com/MasayukiSuda/ExoPlayerFilter
+- **bluemeanie2-3/KidTube** — YouTube-like kids app. Reference for content gating, parental controls, and kid-safe playback patterns over Media3.
+  https://github.com/bluemeanie2-3/KidTube
+
+### Music / audio app references
+
+- **Hamza417/Felicity** — Offline-first music player. Reference for library indexing, metadata, lock-screen transport, and service lifecycle.
+  https://github.com/Hamza417/Felicity
+- **caiyonglong/MusicLake** — Multi-source music player (online + offline). Reference for aggregating audio sources behind a single `Player`.
+  https://github.com/caiyonglong/MusicLake
+- **ZahraHeydari/MusicPlayer** — Compact music player reference. Reference for minimal `MediaSession` + service wiring.
+  https://github.com/ZahraHeydari/MusicPlayer
+- **rychardsonaguar-art/qiaomu-music-player-ncm** — NCM-format music player. Reference for custom decoder integration and proprietary audio format handling.
+  https://github.com/rychardsonaguar-art/qiaomu-music-player-ncm
+- **rawnaldclark/Stash** — Personal media stash / player. Reference for local media discovery patterns.
+  https://github.com/rawnaldclark/Stash
+
+### Multiplatform references
+
+- **SEAbdulbasit/MusicApp-KMP** — Kotlin Multiplatform music app. Reference for separating shared business logic from the Android-specific Media3 playback layer.
+  https://github.com/SEAbdulbasit/MusicApp-KMP
+
+### Lifecycle and process death
+
+- **jsericksk/Simple-Player** — Compose + Media3 reference app focused on lifecycle and system-initiated process death recovery.
+  https://github.com/jsericksk/Simple-Player
 
 ## Community posts (use sparingly)
 
@@ -61,7 +97,6 @@ Community posts change over time and **MUST NOT** be cited in a skill's RIGHT ex
 - Getting started with Media3 UI Compose: https://proandroiddev.com/getting-started-with-media3-ui-compose-compose-uis-for-media-playback-7b634b9309b9
 - Mastering playback state with ExoPlayer (Siva Ganesh Kantamani): https://proandroiddev.com/mastering-playback-state-with-exo-player-977016aa5003
 - Handling process death (Alexander Gherschon): https://galex.dev/posts/how-to-solve-process-death-issues/
-- Simple Player reference app (Compose + Media3, lifecycle and process death): https://github.com/jsericksk/Simple-Player
 
 ## Monitoring and analytics SDKs
 
