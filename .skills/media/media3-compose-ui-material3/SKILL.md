@@ -1,7 +1,7 @@
 ---
 name: media3-compose-ui-material3
 description: Use this skill to build a Jetpack Compose UI for Media3 playback using the media3-ui-compose-material3 building blocks introduced in 1.9.0. Use this skill to compose ContentFrame, PlayPauseButton, SeekBackButton, and SeekForwardButton over a Player obtained from a MediaController bound to a MediaSessionService, scope state updates correctly to the composition, and keep UnstableApi opt-ins at the narrowest site rather than as a global compiler flag.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

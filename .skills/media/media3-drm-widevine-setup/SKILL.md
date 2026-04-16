@@ -1,7 +1,7 @@
 ---
 name: media3-drm-widevine-setup
 description: Use this skill to set up Widevine DRM end to end in an Android app using AndroidX Media3 1.9.0. Use this skill to wire DefaultDrmSessionManagerProvider onto DefaultMediaSourceFactory, construct MediaItem.DrmConfiguration with C.WIDEVINE_UUID, pass license URL with custom HTTP headers, acquire and release offline licenses with OfflineLicenseHelper, detect Widevine L1 vs L3 security levels, handle HDCP policy gating, and recover from provisioning and license failure modes.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"
