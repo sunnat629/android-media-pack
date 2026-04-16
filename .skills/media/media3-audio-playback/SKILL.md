@@ -1,7 +1,7 @@
 ---
 name: media3-audio-playback
 description: Use this skill to ship audio-only playback with AndroidX Media3 1.9.0. Use this skill to configure AudioAttributes for music or spoken content, enable handleAudioBecomingNoisy and handleAudioFocus, integrate with a MediaSessionService for lock screen and notification controls, expose chapters and metadata on MediaItem.MediaMetadata, and honor system volume and accessibility focus behavior.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"
