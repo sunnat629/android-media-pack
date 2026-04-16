@@ -1,7 +1,7 @@
 ---
 name: media3-background-playback-service
 description: Use this skill to build a production-grade Android background playback service using AndroidX Media3 1.9.0. Use this skill to subclass MediaSessionService, construct an ExoPlayer wrapped by a MediaSession, declare the service with foregroundServiceType="mediaPlayback", hold the FOREGROUND_SERVICE_MEDIA_PLAYBACK permission, connect external controllers with MediaController.Builder, let the service generate the playback notification, honor Android 14+ user-initiated foreground service rules, and stop cleanly on onTaskRemoved.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"
