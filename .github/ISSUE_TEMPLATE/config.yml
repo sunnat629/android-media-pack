@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Media3 release notes (upstream)
+    url: https://developer.android.com/jetpack/androidx/releases/media3
+    about: For Media3 API questions unrelated to this pack, consult the upstream release notes first.
+  - name: androidx/media issue tracker
+    url: https://github.com/androidx/media/issues
+    about: For Media3 library bugs or feature requests, file upstream at androidx/media.
