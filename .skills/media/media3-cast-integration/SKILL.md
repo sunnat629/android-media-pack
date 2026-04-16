@@ -1,7 +1,7 @@
 ---
 name: media3-cast-integration
 description: Use this skill to integrate Google Cast with an Android app using AndroidX Media3 1.9.0. Use this skill to construct CastPlayer with CastPlayer.Builder(context).setLocalPlayer(exoPlayer), hand off playback between the local ExoPlayer and remote Cast receiver automatically, expose a MediaRouteButton from the media3-cast Compose surface, wire the Cast context via CastOptionsProvider, and handle session lifecycle events and common Cast failures.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

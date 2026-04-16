@@ -1,7 +1,7 @@
 ---
 name: media3-bandwidth-abr
 description: Use this skill to configure bandwidth estimation and adaptive bitrate (ABR) behavior in AndroidX Media3 1.9.0. Use this skill to build a DefaultBandwidthMeter, share one BandwidthMeter between ExoPlayer and DefaultPreloadManager, tune TrackSelectionParameters bounds, detect network type via C.NetworkType, size DefaultLoadControl buffers for mobile, and avoid common low-bitrate ABR failure modes.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

@@ -1,7 +1,7 @@
 ---
 name: media3-inspector-metadata-thumbnails
 description: Use this skill to read media metadata, extract thumbnails, and demux containers without instantiating an ExoPlayer, using the AndroidX Media3 1.9.0 media3-inspector module. Use this skill to replace android.media.MediaMetadataRetriever with MetadataRetriever, extract frames with FrameExtractor, and read container samples with MediaExtractorCompat off the main thread.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

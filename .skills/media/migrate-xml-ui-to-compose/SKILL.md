@@ -1,7 +1,7 @@
 ---
 name: migrate-xml-ui-to-compose
 description: Use this skill to migrate an Android media UI from XML-based PlayerView (media3-ui) to Jetpack Compose (media3-ui-compose and media3-ui-compose-material3) for Media3 1.9.0. Use this skill to translate PlayerControlView behavior into PlayerSurface and PlayerControls composables, map controller_layout_id overrides to Compose slots, preserve fullscreen and subtitle toggles, and remove dangling AndroidView interop once the migration is complete.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

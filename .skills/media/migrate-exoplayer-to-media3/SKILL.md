@@ -1,7 +1,7 @@
 ---
 name: migrate-exoplayer-to-media3
 description: Use this skill to migrate an Android project from standalone ExoPlayer 2.x (com.google.android.exoplayer2.*) to AndroidX Media3 1.9.0 (androidx.media3.*). Use this skill to update Gradle dependencies, rewrite package imports, replace deprecated classes (SimpleExoPlayer, StyledPlayerView, PlayerNotificationManager, MediaSessionConnector), unify MediaSession with androidx.media3.session.MediaSession inside a MediaSessionService, rewire DataSource.Factory and DRM through DefaultDrmSessionManagerProvider, adopt the new CastPlayer setLocalPlayer pattern, switch media button preferences to setMediaButtonPreferences with standard Player commands, and fix HLS, DASH, SmoothStreaming, and RTSP MediaSource construction.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.1"

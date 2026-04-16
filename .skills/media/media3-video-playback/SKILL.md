@@ -1,7 +1,7 @@
 ---
 name: media3-video-playback
 description: Use this skill to ship video playback with AndroidX Media3 1.9.0. Use this skill to configure a PlayerSurface with the correct resize mode, negotiate HDR tracks with setAllowedVideoJoiningTimeMs, detect HDR capability on the device, enter and exit Picture-in-Picture, handle display cutouts and notches, and react to surface-level events (onRenderedFirstFrame, onVideoSizeChanged, onSurfaceSizeChanged).
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

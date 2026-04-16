@@ -1,7 +1,7 @@
 ---
 name: media3-hls-dash-adaptive-streaming
 description: Use this skill to configure HLS and DASH adaptive streaming in an Android app using AndroidX Media3 1.9.0. Use this skill to construct HlsMediaSource and DashMediaSource through DefaultMediaSourceFactory, tune TrackSelectionParameters for adaptive bitrate selection, handle live versus VOD playback behavior, configure buffering and bandwidth estimation, and avoid common pitfalls with HLS variants, DASH representations, and subtitle track selection.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"
