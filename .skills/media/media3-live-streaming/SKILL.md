@@ -1,7 +1,7 @@
 ---
 name: media3-live-streaming
 description: Use this skill to ship live streaming in an Android app with AndroidX Media3 1.9.0. Use this skill to tune MediaItem.LiveConfiguration for target, min, and max live offsets, keep playback speed inside the recovery window, recover from ERROR_CODE_BEHIND_LIVE_WINDOW, drive DVR scrubbing when the stream has a live window, handle catch-up playback from the start of the window, and keep UI state coherent across connecting, live, stalled, reconnecting, and ended states.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"
