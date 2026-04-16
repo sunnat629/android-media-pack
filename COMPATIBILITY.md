@@ -1,0 +1,47 @@
+# Compatibility
+
+The pack pins against a specific Media3 version and a supported Android toolchain. Skills stay valid against the matrix below until the pack bumps to a new Media3 release.
+
+## Current pack target
+
+- **Media3:** 1.9.0 (released 19 December 2025)
+- **minSdk:** 21 (Android 5.0)
+- **compileSdk / targetSdk:** 35 (Android 15) recommended, 34 minimum
+- **AGP:** 8.0 or later
+- **Kotlin:** 1.9 or later (2.0 or later **PREFERRED** for Compose Material3 1.4+)
+- **Gradle:** 8.5 or later
+- **JDK:** 17 (Gradle toolchain)
+
+## Compose stack
+
+- **Compose BOM:** 2025.11.00 or later
+- **Material3:** 1.4.0 or later
+- **media3-ui-compose-material3:** 1.9.0 or later
+
+## Device coverage
+
+Skills are verified against the following device matrix during the Validate phase:
+
+| API | Android | Notes |
+|-----|---------|-------|
+| 21 | 5.0 | `minSdk` floor |
+| 28 | 9 | Pre-FGS-type baseline |
+| 33 | 13 | `POST_NOTIFICATIONS` runtime permission gate |
+| 34 | 14 | User-initiated foreground service rules, `foregroundServiceType` enforcement |
+| 35 | 15 | Latest default-on wake lock, Material3 dynamic color |
+
+## Out of scope for v1.x
+
+- Low-latency live (LL-HLS, LL-DASH)
+- Offline downloads at the skill level (future Tier 3)
+- Transformer editing flows
+- Any API marked `@ExperimentalApi` in Media3 1.9.0, including `CompositionPlayer`.
+
+## Upgrade policy
+
+When a new Media3 release ships:
+
+1. File a `type-feature` Issue titled `Audit pack for Media3 x.y.z`.
+2. Update [RELEASES.md](RELEASES.md) with a new section.
+3. Re-review every skill whose `metadata.last_reviewed` is older than 90 days.
+4. Bump `metadata.target_media3_version` and `metadata.last_reviewed` only after peer review sign-off.
