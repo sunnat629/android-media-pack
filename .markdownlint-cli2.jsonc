@@ -1,0 +1,27 @@
+{
+  // markdownlint-cli2 configuration for shunnek-media-pack.
+  // Relaxes rules that would otherwise flag legitimate content in SKILL.md files.
+  "config": {
+    "default": true,
+    // MD013: allow long lines (skill descriptions are long).
+    "MD013": false,
+    // MD033: allow raw HTML (callouts, tables, and block elements).
+    "MD033": false,
+    // MD041: allow first line to be YAML frontmatter, not an H1.
+    "MD041": false,
+    // MD024: allow duplicated headings (multiple Step sections all have ### RIGHT / ### WRONG).
+    "MD024": false,
+    // MD036: emphasis-as-heading is used intentionally in MUST / MUST NOT callouts.
+    "MD036": false,
+    // MD034: bare URLs are fine in Gradle TOML blocks and references.
+    "MD034": false
+  },
+  "globs": [
+    "**/*.md"
+  ],
+  "ignores": [
+    "node_modules",
+    ".github/ISSUE_TEMPLATE/**",
+    ".github/PULL_REQUEST_TEMPLATE.md"
+  ]
+}

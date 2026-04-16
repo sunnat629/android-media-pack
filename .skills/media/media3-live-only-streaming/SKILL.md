@@ -1,7 +1,7 @@
 ---
 name: media3-live-only-streaming
 description: Use this skill to ship live-only streaming with AndroidX Media3 1.9.0, where the stream has no DVR window and seeking is disabled. Use this skill to disable scrubbing UI for non-seekable windows, pin the player to the live edge, treat every pause-resume as a snap-to-live, surface a dedicated reconnect state, and configure LiveConfiguration with a tight offset budget.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

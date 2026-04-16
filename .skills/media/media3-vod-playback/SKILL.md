@@ -1,7 +1,7 @@
 ---
 name: media3-vod-playback
 description: Use this skill to ship video-on-demand (VOD) playback with AndroidX Media3 1.9.0. Use this skill to build a static VOD MediaItem, persist resume position across sessions, configure a playlist with auto-advance, expose chapters and scrubber thumbnails, prefetch the next item with DefaultPreloadManager, and distinguish continue-watching from start-over flows.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"
