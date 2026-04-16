@@ -1,7 +1,7 @@
 ---
 name: media3-datasources-networking
 description: Use this skill to choose and wire the right network stack for AndroidX Media3 1.9.0 playback. Use this skill to pick between DefaultHttpDataSource, OkHttpDataSource, CronetDataSource, and HttpEngineDataSource (Android 14+), attach a shared DataSource.Factory to DefaultMediaSourceFactory and DefaultDrmSessionManagerProvider, wire SimpleCache with CacheDataSource for offline-first playback, and inject custom HTTP headers, User-Agent, timeouts, and interceptors.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

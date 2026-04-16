@@ -1,7 +1,7 @@
 ---
 name: media3-ads-ima
 description: Use this skill to integrate Google IMA ads with AndroidX Media3 1.9.0, covering both client-side (CSAI) and server-side (SSAI / DAI) ad insertion. Use this skill to wire ImaAdsLoader into DefaultMediaSourceFactory, build ImaServerSideAdInsertionMediaSource for DAI streams, supply an AdViewProvider from a PlayerView or Compose host, handle companion ad slots, and distinguish ad playback errors from content errors.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

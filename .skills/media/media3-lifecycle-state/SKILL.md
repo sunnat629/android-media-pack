@@ -1,7 +1,7 @@
 ---
 name: media3-lifecycle-state
 description: Use this skill to wire lifecycle-aware playback in an AndroidX Media3 1.9.0 app. Use this skill to obtain a MediaController via DisposableEffect, gate video decoding by activity lifecycle, persist playback position via SavedStateHandle, recover cleanly from configuration changes and system-initiated process death, and release the controller exactly once per host.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"

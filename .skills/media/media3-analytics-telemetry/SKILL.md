@@ -1,7 +1,7 @@
 ---
 name: media3-analytics-telemetry
 description: Use this skill to collect playback analytics and telemetry from an AndroidX Media3 1.9.0 player. Use this skill to register an AnalyticsListener before load, gather on-device summaries via PlaybackStatsListener, extract derived metrics (average bitrate, dropped frames, rebuffering time, join latency), correlate StuckPlayerException and ABR switches, and optionally bridge to Mux Data, Bitmovin Analytics, or FastPix SDKs.
-license: Complete terms in LICENSE.txt
+license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"
