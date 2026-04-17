@@ -96,6 +96,8 @@ val factory = DashMediaSource.Factory(dataSourceFactory)
 
 ## Step 4: attach the license URL per MediaItem
 
+License URL, auth headers, and key-rotation policy live on the per-item `MediaItem.DrmConfiguration`. See `references/license-server.md` for header conventions and token handling.
+
 ### RIGHT
 
 ```kotlin
@@ -126,7 +128,7 @@ player.playWhenReady = true
 val drmProvider = DefaultDrmSessionManagerProvider().apply {
     setDrmHttpDataSourceFactory(httpFactory)
     setDrmUuid(C.WIDEVINE_UUID)
-    setLicenseUri("https://example.com/widevine/license") // reference-only signature, do not share across users
+    setLicenseUri("https://example.com/widevine/license")
 }
 ```
 
@@ -165,48 +167,15 @@ Use the result to filter adaptive variants. On devices reporting L3, the app **M
 val supportsL1 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
 ```
 
-## Step 6: acquire and release offline licenses
+## Step 6: offline licenses
 
-Offline licenses are represented by an opaque `keySetId` byte array. Persist it alongside the media item, pass it back into the `MediaItem.DrmConfiguration` for offline playback, and call `releaseLicense` when the content is removed.
+Offline licenses are represented by an opaque `keySetId` byte array. See `references/offline-licenses.md` for the full acquire, persist, replay, and release flow.
 
-### RIGHT
+Key rules:
 
-```kotlin
-import androidx.media3.common.C
-import androidx.media3.common.Format
-import androidx.media3.datasource.DefaultHttpDataSource
-import androidx.media3.exoplayer.drm.OfflineLicenseHelper
-
-suspend fun acquireOfflineLicense(format: Format): ByteArray {
-    val helper = OfflineLicenseHelper.newWidevineInstance(
-        /* defaultLicenseUrl = */ "https://example.com/widevine/license",
-        /* forceDefaultLicenseUrl = */ false,
-        DefaultHttpDataSource.Factory(),
-        /* optionalKeyRequestParameters = */ mapOf("Authorization" to "Bearer $token"),
-        androidx.media3.exoplayer.drm.DrmSessionEventListener.EventDispatcher(),
-    )
-    return try {
-        helper.downloadLicense(format)
-    } finally {
-        helper.release()
-    }
-}
-```
-
-Pass the `keySetId` back when constructing the offline `MediaItem`:
-
-```kotlin
-MediaItem.Builder()
-    .setUri(localUri)
-    .setDrmConfiguration(
-        MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
-            .setKeySetId(keySetId)
-            .build()
-    )
-    .build()
-```
-
-**DO NOT** forget to call `OfflineLicenseHelper.releaseLicense(keySetId)` when the user removes the download. Leaked offline licenses count against the device concurrent session limit.
+- **MUST** persist the `keySetId` alongside the downloaded media.
+- **MUST** call `OfflineLicenseHelper.releaseLicense(keySetId)` when content is deleted.
+- **MUST NOT** store the raw license bytes. `keySetId` is the opaque handle.
 
 ## Step 7: handle DRM errors
 
@@ -229,6 +198,8 @@ player.addListener(object : Player.Listener {
     }
 })
 ```
+
+Provisioning retry policy (backoff, jitter, cap) is documented in `references/provisioning.md`.
 
 ### WRONG
 
@@ -256,27 +227,6 @@ override fun onPlayerError(error: PlaybackException) {
 ```
 
 **DO NOT** attempt to force-decode HDCP-restricted content with a secondary software path. Doing so violates the license policy and the device attestation.
-
-## Step 9: license request headers and authentication
-
-License servers almost always require an auth token, device fingerprint, or both. Pass these through `setLicenseRequestHeaders`.
-
-### RIGHT
-
-```kotlin
-MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
-    .setLicenseUri("https://example.com/widevine/license")
-    .setLicenseRequestHeaders(
-        mapOf(
-            "Authorization" to "Bearer $userJwt",
-            "X-Device-Id" to deviceId,
-            "X-App-Version" to appVersion,
-        )
-    )
-    .build()
-```
-
-**DO NOT** embed the auth token in the URL query string. License URLs are logged by upstream proxies and CDNs.
 
 ## Common pitfalls
 
