@@ -41,17 +41,17 @@ curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main
 
 ### Junie (JetBrains AI Assistant)
 
-Junie does not auto-discover a folder of skills. It reads a single file, `.junie/guidelines.md`. Install the pack in any of the locations above (the example uses `.agents/skills/`), then reference it from `guidelines.md`.
+Junie does not auto-discover a folder of skills. It reads a single file, `.junie/guidelines.md`. Install the pack under `.junie/skills/` to keep everything Junie-related in one place, then reference it from `guidelines.md`.
 
 ```bash
 cd your-android-project
-mkdir -p .agents/skills .junie
+mkdir -p .junie/skills
 curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .agents/skills android-media-pack-main/.skills/media
+  | tar -xz --strip-components=3 -C .junie/skills android-media-pack-main/.skills/media
 cat >> .junie/guidelines.md <<'EOF'
 ## Media playback
 When asked to migrate or change Media3 code, follow the matching skill under
-`.agents/skills/<skill-name>/SKILL.md`.
+`.junie/skills/<skill-name>/SKILL.md`.
 
 Key skills:
 - `migrate-exoplayer-to-media3` for ExoPlayer 2.x migrations
@@ -63,15 +63,16 @@ Pin Media3 to 1.10.0.
 EOF
 ```
 
-Result (recommended target shown):
+Result (Junie target shown):
 
 ```text
 your-android-project/
-├── .agents/skills/
-│   ├── migrate-exoplayer-to-media3/SKILL.md
-│   ├── media3-background-playback-service/SKILL.md
-│   └── ...
-├── .junie/guidelines.md
+├── .junie/
+│   ├── guidelines.md
+│   └── skills/
+│       ├── migrate-exoplayer-to-media3/SKILL.md
+│       ├── media3-background-playback-service/SKILL.md
+│       └── ...
 ├── app/
 └── build.gradle.kts
 ```
@@ -88,7 +89,7 @@ Re-run the command to update. For reproducible installs, swap `refs/heads/main` 
 | Gemini CLI | `.gemini/skills/` or `.agents/skills/` | `~/.gemini/skills/` or `~/.agents/skills/` |
 | OpenAI Codex | `.agents/skills/` (community consensus) | — |
 | Cursor | `.cursor/skills/<name>/SKILL.md` | `~/.cursor/skills/<name>/SKILL.md` |
-| Junie (JetBrains AI Assistant) | `.junie/guidelines.md` (single file, reference skills) | — |
+| Junie (JetBrains AI Assistant) | `.junie/guidelines.md` + `.junie/skills/<name>/SKILL.md` (referenced from guidelines) | — |
 
 Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [GitHub Copilot skills](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/add-skills), [OpenCode skills](https://opencode.ai/docs/skills/), [Gemini CLI skills](https://geminicli.com/docs/cli/skills/), [OpenAI Codex skills](https://developers.openai.com/codex/skills), [Cursor skills](https://cursor.com/docs/skills), [Junie guidelines](https://www.jetbrains.com/help/junie/customize-guidelines.html).
 
