@@ -4,6 +4,11 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ## [Unreleased]
 
+### Changed
+- **Renamed repository** from `android-media-skill` to `android-media-pack`. Pack author remains **Shunnek Labs**. Individual skill names are unchanged.
+- README rewritten with three install paths: Android CLI (`~/.android/skills/`), project-level (`.skills/android-media-pack/`), and Junie guidelines (`.junie/guidelines.md`). Added a "Test it works" section with dry-run pass criteria.
+- CONTRIBUTING, CHANGELOG, SECURITY, and release workflow updated to the new repo slug.
+
 ## [1.2.1] - 2026-04-17
 
 ### Changed
@@ -64,8 +69,8 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 ### Meta
 - Initial repository scaffold: SKILL anatomy, issue types, label taxonomy.
 
-[Unreleased]: https://github.com/sunnat629/android-media-skill/compare/v1.2.1...HEAD
-[1.2.1]: https://github.com/sunnat629/android-media-skill/compare/v1.2.0...v1.2.1
-[1.2.0]: https://github.com/sunnat629/android-media-skill/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/sunnat629/android-media-skill/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/sunnat629/android-media-skill/releases/tag/v1.0.0
+[Unreleased]: https://github.com/sunnat629/android-media-pack/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/sunnat629/android-media-pack/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/sunnat629/android-media-pack/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/sunnat629/android-media-pack/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/sunnat629/android-media-pack/releases/tag/v1.0.0
