@@ -1,22 +1,22 @@
-# android-media-skill
+# android-media-pack
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![CI](https://github.com/sunnat629/android-media-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/android-media-skill/actions/workflows/ci.yml)
+[![CI](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml)
 [![Media3](https://img.shields.io/badge/Media3-1.9.0-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
 Android skills for AI coding agents to build with **AndroidX Media3 1.9.0**. Drop them into your project and prompt your agent. 18 skills covering migration, playback, DRM, streaming, ads, and analytics. Published by **Shunnek Labs**.
 
 ## Install
 
-Agents do not scan a bare `.skills/` directory. Each agent reads from its own namespaced folder. The recommended cross-agent target is `.agents/skills/`, which is recognized by GitHub Copilot, OpenCode, Gemini CLI, and OpenAI Codex. Claude Code and Cursor read from their own directories (see matrix below).
+Agents do not scan a bare `.skills/` directory. Each agent reads from its own namespaced folder. The recommended cross-agent target is `.agents/skills/`, which is recognized by GitHub Copilot, OpenCode, Gemini CLI, and OpenAI Codex. Claude Code, Cursor, and Junie read from their own locations (see matrix below).
 
 ### Recommended (cross-agent, works with Copilot, OpenCode, Gemini CLI, Codex)
 
 ```bash
 cd your-android-project
 mkdir -p .agents/skills
-curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .agents/skills android-media-skill-main/.skills/media
+curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=3 -C .agents/skills android-media-pack-main/.skills/media
 ```
 
 ### Claude Code
@@ -24,8 +24,8 @@ curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/mai
 ```bash
 cd your-android-project
 mkdir -p .claude/skills
-curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .claude/skills android-media-skill-main/.skills/media
+curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=3 -C .claude/skills android-media-pack-main/.skills/media
 ```
 
 ### Cursor
@@ -33,8 +33,32 @@ curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/mai
 ```bash
 cd your-android-project
 mkdir -p .cursor/skills
-curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .cursor/skills android-media-skill-main/.skills/media
+curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=3 -C .cursor/skills android-media-pack-main/.skills/media
+```
+
+### Junie (JetBrains AI Assistant)
+
+Junie does not auto-discover a folder of skills. It reads a single file, `.junie/guidelines.md`. Install the pack in any of the locations above (the example uses `.agents/skills/`), then reference it from `guidelines.md`.
+
+```bash
+cd your-android-project
+mkdir -p .agents/skills .junie
+curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=3 -C .agents/skills android-media-pack-main/.skills/media
+cat >> .junie/guidelines.md <<'EOF'
+## Media playback
+When asked to migrate or change Media3 code, follow the matching skill under
+`.agents/skills/<skill-name>/SKILL.md`.
+
+Key skills:
+- `migrate-exoplayer-to-media3` for ExoPlayer 2.x migrations
+- `media3-background-playback-service` for background audio
+- `media3-drm-widevine-setup` for Widevine
+- `media3-compose-ui-material3` for Compose player UI
+
+Pin Media3 to 1.9.0.
+EOF
 ```
 
 Result (recommended target shown):
@@ -45,11 +69,12 @@ your-android-project/
 │   ├── migrate-exoplayer-to-media3/SKILL.md
 │   ├── media3-background-playback-service/SKILL.md
 │   └── ...
+├── .junie/guidelines.md
 ├── app/
 └── build.gradle.kts
 ```
 
-Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.0` and `android-media-skill-main` for `android-media-skill-1.2.0`.
+Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.0` and `android-media-pack-main` for `android-media-pack-1.2.0`.
 
 ### Per-agent discovery paths
 
@@ -61,8 +86,9 @@ Re-run the command to update. For reproducible installs, swap `refs/heads/main` 
 | Gemini CLI | `.gemini/skills/` or `.agents/skills/` | `~/.gemini/skills/` or `~/.agents/skills/` |
 | OpenAI Codex | `.agents/skills/` (community consensus) | — |
 | Cursor | `.cursor/skills/<name>/SKILL.md` | `~/.cursor/skills/<name>/SKILL.md` |
+| Junie (JetBrains AI Assistant) | `.junie/guidelines.md` (single file, reference skills) | — |
 
-Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [GitHub Copilot skills](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/add-skills), [OpenCode skills](https://opencode.ai/docs/skills/), [Gemini CLI skills](https://geminicli.com/docs/cli/skills/), [OpenAI Codex skills](https://developers.openai.com/codex/skills), [Cursor skills](https://cursor.com/docs/skills).
+Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [GitHub Copilot skills](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/add-skills), [OpenCode skills](https://opencode.ai/docs/skills/), [Gemini CLI skills](https://geminicli.com/docs/cli/skills/), [OpenAI Codex skills](https://developers.openai.com/codex/skills), [Cursor skills](https://cursor.com/docs/skills), [Junie guidelines](https://www.jetbrains.com/help/junie/customize-guidelines.html).
 
 ## Use
 
@@ -93,7 +119,7 @@ Complements [android/skills](https://github.com/android/skills). Same `SKILL.md`
 
 [Changelog](CHANGELOG.md) · [Compatibility](COMPATIBILITY.md) · [Contributing](CONTRIBUTING.md) · [References](REFERENCES.md) · [Security](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
-Questions go to [Discussions](https://github.com/sunnat629/android-media-skill/discussions). Bugs go to [Issues](https://github.com/sunnat629/android-media-skill/issues/new/choose).
+Questions go to [Discussions](https://github.com/sunnat629/android-media-pack/discussions). Bugs go to [Issues](https://github.com/sunnat629/android-media-pack/issues/new/choose).
 
 ## License
 
