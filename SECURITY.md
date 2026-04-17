@@ -11,7 +11,7 @@ The pack is aligned with **AndroidX Media3 1.9.0** and receives fixes on the cur
 
 ## Reporting a vulnerability
 
-Email **suncha629@gmail.com** with the subject line `[security] shunnek-media-pack`. Include:
+Email **suncha629@gmail.com** with the subject line `[security] android-media-skill`. Include:
 
 - A clear description of the issue and the affected skill or file.
 - Reproduction steps or a proof of concept.

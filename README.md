@@ -1,18 +1,18 @@
-# shunnek-media-pack
+# android-media-skill
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![CI](https://github.com/sunnat629/shunnek-media-pack/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/shunnek-media-pack/actions/workflows/ci.yml)
+[![CI](https://github.com/sunnat629/android-media-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/android-media-skill/actions/workflows/ci.yml)
 [![Media3](https://img.shields.io/badge/Media3-1.9.0-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
-Android skills for AI coding agents to build with **AndroidX Media3 1.9.0**. Drop them into your project and prompt your agent. 18 skills covering migration, playback, DRM, streaming, ads, and analytics.
+Android skills for AI coding agents to build with **AndroidX Media3 1.9.0**. Drop them into your project and prompt your agent. 18 skills covering migration, playback, DRM, streaming, ads, and analytics. Published by **Shunnek Labs**.
 
 ## Install
 
 ```bash
 cd your-android-project
 mkdir -p .skills
-curl -sL https://github.com/sunnat629/shunnek-media-pack/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=2 -C .skills shunnek-media-pack-main/.skills/media
+curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=2 -C .skills android-media-skill-main/.skills/media
 ```
 
 Result:
@@ -27,7 +27,7 @@ your-android-project/
 └── build.gradle.kts
 ```
 
-Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.0` and `shunnek-media-pack-main` for `shunnek-media-pack-1.2.0`.
+Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.0` and `android-media-skill-main` for `android-media-skill-1.2.0`.
 
 ## Use
 
@@ -60,7 +60,7 @@ Complements [android/skills](https://github.com/android/skills). Same format, sa
 
 [Changelog](CHANGELOG.md) · [Compatibility](COMPATIBILITY.md) · [Contributing](CONTRIBUTING.md) · [References](REFERENCES.md) · [Security](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
-Questions go to [Discussions](https://github.com/sunnat629/shunnek-media-pack/discussions). Bugs go to [Issues](https://github.com/sunnat629/shunnek-media-pack/issues/new/choose).
+Questions go to [Discussions](https://github.com/sunnat629/android-media-skill/discussions). Bugs go to [Issues](https://github.com/sunnat629/android-media-skill/issues/new/choose).
 
 ## License
 
