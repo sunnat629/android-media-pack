@@ -1,6 +1,6 @@
 ---
 name: media3-compose-ui-material3
-description: Use this skill to build a Jetpack Compose UI for Media3 playback using the media3-ui-compose-material3 building blocks introduced in 1.9.0. Use this skill to compose ContentFrame, PlayPauseButton, SeekBackButton, and SeekForwardButton over a Player obtained from a MediaController bound to a MediaSessionService, scope state updates correctly to the composition, and keep UnstableApi opt-ins at the narrowest site rather than as a global compiler flag.
+description: Use this skill to build a Jetpack Compose UI for Media3 playback using the media3-ui-compose-material3 building blocks introduced in 1.10.0. Use this skill to compose ContentFrame, PlayPauseButton, SeekBackButton, and SeekForwardButton over a Player obtained from a MediaController bound to a MediaSessionService, scope state updates correctly to the composition, and keep UnstableApi opt-ins at the narrowest site rather than as a global compiler flag.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -25,26 +25,24 @@ metadata:
 
 - Project **MUST** use `minSdk` 21 or later.
 - Project **MUST** use Compose BOM 2025.11 or later with Material3 1.4 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later. Earlier releases ship the Compose UI as experimental.
-- Project **MUST NOT** wrap a legacy `PlayerView` in `AndroidView` in the RIGHT path. That pattern belongs to `migrate-exoplayer-to-media3`.
-- Project **MUST NOT** enable a global `-opt-in=androidx.media3.common.util.UnstableApi` compiler flag. Scope opt-ins per composable.
-- A `MediaSessionService` **MUST** be running to host the `Player`. Apps that only need preview playback may construct an `ExoPlayer` directly, but the RIGHT path for production is a `MediaController` bound to a `MediaSessionService`.
+- Project **MUST** pin Media3 to **1.10.0** or later.
+- Project **MUST NOT** wrap a legacy `PlayerView` in `AndroidView` in the RIGHT path.
+- Project **MUST NOT** enable a global `-opt-in=androidx.media3.common.util.UnstableApi` compiler flag.
+- A `MediaSessionService` **MUST** be running to host the `Player`.
 
 ## Step 1: plan
 
-Before composing the UI, do the following:
-
-1. Confirm the app already has a `MediaSessionService`. If not, author that skill first (`media3-background-playback-service`).
-2. Enumerate every place that constructs an `ExoPlayer` from Compose code. Flag each for replacement with a `MediaController`.
-3. Grep for `AndroidView` wrapping `PlayerView`. Each occurrence is a candidate for replacement with `ContentFrame`.
-4. Grep for a global `-opt-in=androidx.media3.common.util.UnstableApi`. Remove it and replace with `@OptIn(UnstableApi::class)` on each composable that uses an unstable API.
-5. Confirm the theme applies Material3 (`MaterialTheme` from `androidx.compose.material3`). The Material3 composables in `media3-ui-compose-material3` inherit theme defaults.
+1. Confirm the app already has a `MediaSessionService`.
+2. Enumerate every place that constructs an `ExoPlayer` from Compose code.
+3. Grep for `AndroidView` wrapping `PlayerView`.
+4. Grep for a global `-opt-in=androidx.media3.common.util.UnstableApi`.
+5. Confirm the theme applies Material3.
 
 ## Step 2: Gradle dependencies
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 compose-bom = "2025.11.00"
 material3 = "1.4.0"
 
@@ -57,8 +55,6 @@ media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = 
 media3-session   = { module = "androidx.media3:media3-session",   version.ref = "media3" }
 media3-ui-compose-material3 = { module = "androidx.media3:media3-ui-compose-material3", version.ref = "media3" }
 ```
-
-**DO NOT** include `media3-ui` alongside `media3-ui-compose-material3` unless the app still renders a legacy `PlayerView` somewhere.
 
 ## Step 3: obtain the Player via a MediaController
 
@@ -92,18 +88,6 @@ fun rememberMediaController(): Player? {
         }
     }
     return player
-}
-```
-
-### WRONG
-
-```kotlin
-// WRONG: constructing ExoPlayer inside a composable leaks the player across recomposition and disobeys the single-player rule
-@Composable
-fun PlayerScreen() {
-    val context = LocalContext.current
-    val player = remember { ExoPlayer.Builder(context).build() }
-    // ...
 }
 ```
 
@@ -147,21 +131,7 @@ fun PlayerUi(player: Player, modifier: Modifier = Modifier) {
 }
 ```
 
-### WRONG
-
-```kotlin
-// WRONG: wrapping a legacy PlayerView in AndroidView defeats the purpose of the Compose UI module
-@Composable
-fun PlayerUi(player: Player) {
-    AndroidView(factory = { context -> PlayerView(context).apply { this.player = player } })
-}
-```
-
 ## Step 5: observe player state with composable helpers
-
-Media3 ships composable-friendly state holders. **DO NOT** subscribe to the `Player` with an ad-hoc `Player.Listener` inside a `LaunchedEffect` unless a helper does not already cover the case.
-
-### RIGHT
 
 ```kotlin
 import androidx.compose.runtime.Composable
@@ -182,26 +152,7 @@ fun PlayerHeader(player: Player) {
 }
 ```
 
-### WRONG
-
-```kotlin
-// WRONG: manual Player.Listener without DisposableEffect leaks listeners across recompositions
-@Composable
-fun PlayerHeader(player: Player) {
-    var isPlaying by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
-        player.addListener(object : Player.Listener {
-            override fun onIsPlayingChanged(value: Boolean) { isPlaying = value }
-        })
-    }
-}
-```
-
 ## Step 6: scope UnstableApi opt-ins narrowly
-
-Media3 marks many Compose APIs with `@UnstableApi` while they stabilize. Opt in at the function that calls them, never at the module level.
-
-### RIGHT
 
 ```kotlin
 @OptIn(UnstableApi::class)
@@ -209,20 +160,7 @@ Media3 marks many Compose APIs with `@UnstableApi` while they stabilize. Opt in 
 fun PlayerScreen(player: Player) { /* ... */ }
 ```
 
-### WRONG
-
-```kotlin
-// WRONG: global compiler opt-in hides real surface-area changes when upgrading Media3
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll("-opt-in=androidx.media3.common.util.UnstableApi")
-    }
-}
-```
-
 ## Step 7: respect lifecycle
-
-### RIGHT
 
 ```kotlin
 import androidx.compose.runtime.Composable
@@ -245,11 +183,7 @@ fun PlayerGate(content: @Composable () -> Unit) {
 }
 ```
 
-**DO NOT** leave a video decoding in a backgrounded composable. Wrap heavyweight player UI in a lifecycle-aware gate to save battery.
-
 ## Step 8: theming and Material3 integration
-
-`ContentFrame`, `PlayPauseButton`, `SeekBackButton`, and `SeekForwardButton` read from `MaterialTheme`. The **PREFERRED** approach is to provide a coherent Material3 theme and let the buttons inherit tonal colors, typography, and corner radii.
 
 ```kotlin
 @Composable
@@ -261,15 +195,13 @@ fun App() {
 }
 ```
 
-**DO NOT** recolor the Media3 buttons with hand-coded `Color` values. Change the Material3 scheme instead.
-
 ## Common pitfalls
 
-- **Creating `ExoPlayer` inside a composable.** Leaks on recomposition. Use a `MediaController` bound to a `MediaSessionService`.
-- **Wrapping `PlayerView` in `AndroidView`.** Defeats the purpose of the Compose UI module. Use `ContentFrame` instead.
-- **Global `UnstableApi` opt-in.** Masks real surface-area changes on upgrade. Use `@OptIn` per composable.
-- **Manual `Player.Listener` without `DisposableEffect`.** Leaks listeners. Use the `remember...State` helpers from `androidx.media3.ui.compose.state`.
-- **Hard-coded button colors.** Break in dark mode and on dynamic color devices. Theme at the Material3 level.
-- **Forgetting to release the `MediaController`.** Ties up the session. Always release in `onDispose`.
-- **Using the legacy PlayerView PiP path in Compose.** PiP plumbing now belongs in the activity, not in the composable.
-- **Blocking the main thread while awaiting the controller.** The controller future must be observed asynchronously.
+- **Creating `ExoPlayer` inside a composable.**
+- **Wrapping `PlayerView` in `AndroidView`.**
+- **Global `UnstableApi` opt-in.**
+- **Manual `Player.Listener` without `DisposableEffect`.**
+- **Hard-coded button colors.**
+- **Forgetting to release the `MediaController`.**
+- **Using the legacy PlayerView PiP path in Compose.**
+- **Blocking the main thread while awaiting the controller.**

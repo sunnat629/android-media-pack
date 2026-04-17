@@ -1,6 +1,6 @@
 ---
 name: media3-analytics-telemetry
-description: Use this skill to collect playback analytics and telemetry from an AndroidX Media3 1.9.0 player. Use this skill to register an AnalyticsListener before load, gather on-device summaries via PlaybackStatsListener, extract derived metrics (average bitrate, dropped frames, rebuffering time, join latency), correlate StuckPlayerException and ABR switches, and optionally bridge to Mux Data, Bitmovin Analytics, or FastPix SDKs.
+description: Use this skill to collect playback analytics and telemetry from an AndroidX Media3 1.10.0 player. Use this skill to register an AnalyticsListener before load, gather on-device summaries via PlaybackStatsListener, extract derived metrics (average bitrate, dropped frames, rebuffering time, join latency), correlate StuckPlayerException and ABR switches, and optionally bridge to Mux Data, Bitmovin Analytics, or FastPix SDKs.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -23,30 +23,27 @@ metadata:
 ## Prerequisites
 
 - Project **MUST** use `minSdk` 21 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later.
-- Project **MUST** register its `AnalyticsListener` **before** load. Stats gathered after `prepare()` miss the initial render window.
-- Project **MUST NOT** hold an `AnalyticsListener` that captures an activity reference. Use an application-scoped object or a `WeakReference`.
-- Third-party SDK integration is optional. The canonical on-device path is `PlaybackStatsListener`.
+- Project **MUST** pin Media3 to **1.10.0** or later.
+- Project **MUST** register its `AnalyticsListener` **before** load.
+- Project **MUST NOT** hold an `AnalyticsListener` that captures an activity reference.
 
 ## Step 1: plan
 
-1. Enumerate required metrics: join latency, average video bitrate, dropped frames, rebuffer time, total watch time, error count, ad completion.
-2. Decide the delivery mechanism: on-device only (`PlaybackStatsListener` + app-owned logger), third-party SDK (Mux, Bitmovin, FastPix), or both.
-3. Confirm the analytics pipeline can absorb at least one event per `Player.Listener` callback (hundreds per minute on adaptive streams).
-4. Identify session boundaries. A "session" in Media3 maps to a `Timeline.Window`, plus each ad within the window.
+1. Enumerate required metrics.
+2. Decide the delivery mechanism.
+3. Confirm the analytics pipeline can absorb events at high rates.
+4. Identify session boundaries.
 5. Flag any manual `Player.Listener` usage that duplicates `AnalyticsListener` events.
 
 ## Step 2: Gradle dependencies
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 
 [libraries]
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
 ```
-
-Third-party SDKs are added per vendor (Mux, Bitmovin, FastPix). See their docs.
 
 ## Step 3: register AnalyticsListener before load
 
@@ -86,8 +83,6 @@ player.addAnalyticsListener(statsListener)
 
 ## Step 4: PlaybackStats summary metrics
 
-`PlaybackStats` exposes derived metrics at the end of each session. Useful fields:
-
 | Field | Meaning |
 |---|---|
 | `totalPlayTimeMs` | Foreground playtime, excluding ads |
@@ -96,13 +91,7 @@ player.addAnalyticsListener(statsListener)
 | `totalPauseBufferTimeMs` | Buffering while paused |
 | `meanTimeBetweenRebuffers()` | Mean time between rebuffer events |
 | `droppedFrames` | Count of dropped video frames |
-| `videoFormatHeightTimeProduct` | Sum of (resolution height × time) for a weighted avg resolution |
-
-Compute the average video height:
-
-```kotlin
-val avgHeight = stats.videoFormatHeightTimeProduct.toDouble() / stats.totalValidJoinTimeMs
-```
+| `videoFormatHeightTimeProduct` | Sum of (resolution height * time) for a weighted avg resolution |
 
 ## Step 5: custom AnalyticsListener for per-event telemetry
 
@@ -132,22 +121,13 @@ val customListener = object : AnalyticsListener {
     ) {
         telemetry.trackDroppedFrames(droppedFrames, elapsedMs)
     }
-
-    override fun onBandwidthEstimate(
-        eventTime: AnalyticsListener.EventTime,
-        totalLoadTimeMs: Int,
-        totalBytesLoaded: Long,
-        bitrateEstimate: Long,
-    ) {
-        telemetry.trackBandwidth(bitrateEstimate, eventTime.currentPlaybackPositionMs)
-    }
 }
 player.addAnalyticsListener(customListener)
 ```
 
 ## Step 6: correlate StuckPlayerException
 
-Media3 1.9.0 emits `StuckPlayerException` when the player stalls without progress. Surface it distinctly.
+Media3 1.10.0 emits `StuckPlayerException` when the player stalls without progress.
 
 ```kotlin
 import androidx.media3.exoplayer.StuckPlayerException
@@ -161,8 +141,6 @@ override fun onPlayerError(eventTime: AnalyticsListener.EventTime, error: androi
 ```
 
 ## Step 7: derive join latency
-
-Join latency is the time from `player.prepare()` to the first rendered video frame.
 
 ```kotlin
 import androidx.media3.exoplayer.analytics.AnalyticsListener
@@ -190,17 +168,11 @@ class JoinLatencyTracker : AnalyticsListener {
 }
 ```
 
-**DO NOT** measure join latency from `player.setMediaItem()` to `STATE_READY`. It includes code paths unrelated to the user-visible "first frame".
-
 ## Step 8: third-party SDK bridges
-
-If you also ship Mux / Bitmovin / FastPix:
 
 - Mux Data: `MuxStatsExoPlayer(muxData, player, env, customerVideoData, customerViewData)`
 - Bitmovin: `ExoPlayerCollector(player, BitmovinAnalyticsConfig(...))`
 - FastPix: `FastpixMetrics.monitor(player, CustomerData(...))`
-
-Only one third-party SDK should own session boundaries. Mixing two causes double-counting.
 
 ## Step 9: dispose cleanly
 
@@ -212,15 +184,13 @@ override fun onDestroy() {
 }
 ```
 
-`PlaybackStatsListener` releases automatically with the player.
-
 ## Common pitfalls
 
-- **Registering the listener after `prepare()`.** Loses the initial render window.
-- **Activity reference captured by the listener.** Leaks.
-- **Mixing multiple third-party SDKs that own session boundaries.** Double-counts.
-- **Measuring join latency from `setMediaItem` to `STATE_READY`.** Includes non-user-visible work.
-- **Duplicating `Player.Listener` and `AnalyticsListener` for the same event.** Emit once, from `AnalyticsListener`.
-- **Not handling `StuckPlayerException` distinctly.** Misclassified as a generic error.
-- **No session ID.** Cannot correlate ad and content analytics.
-- **Draining `PlaybackStats.playbackStateDurationsMs` without weighting by session.** Produces meaningless averages.
+- **Registering the listener after `prepare()`.**
+- **Activity reference captured by the listener.**
+- **Mixing multiple third-party SDKs that own session boundaries.**
+- **Measuring join latency from `setMediaItem` to `STATE_READY`.**
+- **Duplicating `Player.Listener` and `AnalyticsListener` for the same event.**
+- **Not handling `StuckPlayerException` distinctly.**
+- **No session ID.**
+- **Draining `PlaybackStats.playbackStateDurationsMs` without weighting by session.**

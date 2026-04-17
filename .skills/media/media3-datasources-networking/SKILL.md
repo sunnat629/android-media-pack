@@ -1,6 +1,6 @@
 ---
 name: media3-datasources-networking
-description: Use this skill to choose and wire the right network stack for AndroidX Media3 1.9.0 playback. Use this skill to pick between DefaultHttpDataSource, OkHttpDataSource, CronetDataSource, and HttpEngineDataSource (Android 14+), attach a shared DataSource.Factory to DefaultMediaSourceFactory and DefaultDrmSessionManagerProvider, wire SimpleCache with CacheDataSource for offline-first playback, and inject custom HTTP headers, User-Agent, timeouts, and interceptors.
+description: Use this skill to choose and wire the right network stack for AndroidX Media3 1.10.0 playback. Use this skill to pick between DefaultHttpDataSource, OkHttpDataSource, CronetDataSource, and HttpEngineDataSource (Android 14+), attach a shared DataSource.Factory to DefaultMediaSourceFactory and DefaultDrmSessionManagerProvider, wire SimpleCache with CacheDataSource for offline-first playback, and inject custom HTTP headers, User-Agent, timeouts, and interceptors.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -23,7 +23,7 @@ metadata:
 ## Prerequisites
 
 - Project **MUST** use `minSdk` 21 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later.
+- Project **MUST** pin Media3 to **1.10.0** or later.
 - Project **MUST** use HTTPS for all media URLs. Cleartext is not covered by this skill.
 - Project **MUST NOT** construct two different `DataSource.Factory` instances for the same stream that diverge in headers, User-Agent, or TLS configuration. DRM, manifest, and segment fetches **MUST** share one factory.
 - Project **MUST NOT** build `OkHttpClient` without a timeout. Media3 inherits whatever timeouts the supplied client has.
@@ -46,7 +46,7 @@ metadata:
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 okhttp = "4.12.0"
 
 [libraries]
@@ -82,8 +82,7 @@ val dataSourceFactory = OkHttpDataSource.Factory(okHttp)
 ### WRONG
 
 ```kotlin
-// WRONG: building OkHttpClient() with no timeouts lets the client hang indefinitely,
-// which freezes manifest fetches and produces "playback stuck" bug reports
+// WRONG: building OkHttpClient() with no timeouts lets the client hang indefinitely
 val okHttp = OkHttpClient()
 ```
 
@@ -104,8 +103,6 @@ val dataSourceFactory = HttpEngineDataSource.Factory(httpEngine)
     .setUserAgent("Shunnek/1.0 (Android)")
     .setDefaultRequestProperties(mapOf("X-App-Version" to appVersion))
 ```
-
-`HttpEngineDataSource` uses the platform HTTP engine on supported devices and transparently adds HTTP/2 and HTTP/3 over QUIC.
 
 ### WRONG
 
@@ -134,11 +131,9 @@ val player = ExoPlayer.Builder(context)
     .build()
 ```
 
-**DO NOT** build a separate `DefaultHttpDataSource` for DRM. That diverges User-Agent and auth tokens from the media fetch.
+**DO NOT** build a separate `DefaultHttpDataSource` for DRM.
 
 ## Step 6: SimpleCache + CacheDataSource
-
-Use this for resume-across-launches behavior where the user expects partial content to persist.
 
 ### RIGHT
 
@@ -163,23 +158,13 @@ val mediaSourceFactory = DefaultMediaSourceFactory(context)
     .setDataSourceFactory(cacheSourceFactory)
 ```
 
-### WRONG
-
-```kotlin
-// WRONG: one SimpleCache per activity corrupts the cache on process recreation
-class MainActivity : ComponentActivity() {
-    private val cache = SimpleCache(cacheDir, evictor, StandaloneDatabaseProvider(this))
-}
-```
-
-`SimpleCache` **MUST** be a process-wide singleton. Typically in `Application.onCreate` or a DI provider.
+`SimpleCache` **MUST** be a process-wide singleton.
 
 ## Step 7: custom headers per request
 
-When the license endpoint needs different headers than segments, attach headers to each `MediaItem` or `DrmConfiguration` rather than to the factory.
+Attach headers to each `MediaItem` or `DrmConfiguration` rather than to the factory.
 
 ```kotlin
-import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 
 val item = MediaItem.Builder()
@@ -193,8 +178,6 @@ val item = MediaItem.Builder()
     )
     .build()
 ```
-
-For Widevine license requests, attach to `DrmConfiguration.setLicenseRequestHeaders`. See the `media3-drm-widevine-setup` skill.
 
 ## Step 8: observe network errors
 
@@ -218,18 +201,7 @@ player.addListener(object : Player.Listener {
 
 `SimpleCache` holds file handles. Release it when the process is being torn down.
 
-```kotlin
-class App : Application() {
-    lateinit var cache: SimpleCache
-
-    override fun onCreate() {
-        super.onCreate()
-        cache = SimpleCache(...)
-    }
-}
-```
-
-**DO NOT** call `cache.release()` in an activity `onDestroy`. It invalidates the cache for the remaining activity stack.
+**DO NOT** call `cache.release()` in an activity `onDestroy`.
 
 ## Common pitfalls
 

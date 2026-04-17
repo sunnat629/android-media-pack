@@ -1,6 +1,6 @@
 ---
 name: media3-inspector-metadata-thumbnails
-description: Use this skill to read media metadata, extract thumbnails, and demux containers without instantiating an ExoPlayer, using the AndroidX Media3 1.9.0 media3-inspector module. Use this skill to replace android.media.MediaMetadataRetriever with MetadataRetriever, extract frames with FrameExtractor, and read container samples with MediaExtractorCompat off the main thread.
+description: Use this skill to read media metadata, extract thumbnails, and demux containers without instantiating an ExoPlayer, using the AndroidX Media3 1.10.0 media3-inspector module. Use this skill to replace android.media.MediaMetadataRetriever with MetadataRetriever, extract frames with FrameExtractor, and read container samples with MediaExtractorCompat off the main thread.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -22,28 +22,26 @@ metadata:
 ## Prerequisites
 
 - Project **MUST** use `minSdk` 21 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later. The `media3-inspector` module shipped in 1.9.0.
-- Inspector calls **MUST NOT** run on the main thread. Every API returns a `ListenableFuture` or is explicitly suspending.
-- Project **MUST NOT** use `android.media.MediaMetadataRetriever` in the RIGHT path for new code. It is retained only for legacy call sites pending migration.
+- Project **MUST** pin Media3 to **1.10.0** or later.
+- Inspector calls **MUST NOT** run on the main thread.
+- Project **MUST NOT** use `android.media.MediaMetadataRetriever` in the RIGHT path for new code.
 
 ## Step 1: plan
 
-1. Grep the codebase for `android.media.MediaMetadataRetriever`. Each occurrence is a candidate for `androidx.media3.inspector.MetadataRetriever`.
-2. Flag every place that reads a frame via `MediaMetadataRetriever.getFrameAtTime`. These move to `FrameExtractor.getFrame`.
-3. Flag every custom `MediaExtractor` usage that parses samples outside of a player. These move to `MediaExtractorCompat`.
-4. Confirm all inspection happens off the main thread. Wrap calls in `Dispatchers.IO` with Kotlin coroutines.
+1. Grep the codebase for `android.media.MediaMetadataRetriever`.
+2. Flag every place that reads a frame via `MediaMetadataRetriever.getFrameAtTime`.
+3. Flag every custom `MediaExtractor` usage that parses samples outside of a player.
+4. Confirm all inspection happens off the main thread.
 
 ## Step 2: Gradle dependencies
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 
 [libraries]
 media3-inspector = { module = "androidx.media3:media3-inspector", version.ref = "media3" }
 ```
-
-No `media3-exoplayer` needed for read-only inspection.
 
 ## Step 3: read metadata with MetadataRetriever
 
@@ -102,11 +100,7 @@ val bitmap = android.media.MediaMetadataRetriever().run {
 }
 ```
 
-**DO NOT** call `FrameExtractor` from a UI listener without a coroutine scope. The future runs asynchronously but the setup cost (decoder initialization) still takes tens of milliseconds.
-
 ## Step 5: demux samples with MediaExtractorCompat
-
-When the goal is to read raw samples for analysis (for example, to count I-frames or to dump sample timestamps), **PREFERRED** is `MediaExtractorCompat` over the platform `MediaExtractor`. It handles Media3-supported container edge cases.
 
 ### RIGHT
 
@@ -128,8 +122,6 @@ suspend fun firstVideoFormat(context: Context, uri: String): Format? = withConte
 
 ## Step 6: batched metadata reads
 
-Reading metadata for a list of items is common (library, gallery). Batch with Kotlin coroutines and bounded concurrency.
-
 ```kotlin
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -146,15 +138,11 @@ suspend fun loadDurations(context: Context, uris: List<String>): Map<String, Lon
 }
 ```
 
-**DO NOT** launch unbounded parallel decoders. Each `FrameExtractor` holds a hardware decoder on many devices.
-
 ## Step 7: release resources deterministically
 
-Every inspector returned by the builders is `Closeable`. Use `.use { ... }` in Kotlin or a try-with-resources block from Java. Leaking these holds decoder handles and throws `MediaCodec.CodecException` on subsequent calls.
+Every inspector returned by the builders is `Closeable`. Use `.use { ... }` in Kotlin.
 
 ## Step 8: integrate with MediaSession
-
-The inspector results are pure values. Populate `MediaMetadata` for the session from the retriever output:
 
 ```kotlin
 import androidx.media3.common.MediaMetadata
@@ -169,9 +157,9 @@ fun buildSessionMetadata(title: String, artistOrAuthor: String, artwork: Bitmap?
 
 ## Common pitfalls
 
-- **Calling the inspector on the main thread.** Even `suspend` variants require an `IO` dispatcher.
-- **Forgetting `.use { ... }`.** Leaks hardware decoders.
-- **Unbounded parallelism in batch jobs.** Trips `MediaCodec` limits.
-- **Treating `getFrame` output as a pooled bitmap.** The caller owns the `Bitmap`. Recycle when done, ideally via a Coil or Glide pipeline.
-- **Mixing `android.media.MediaMetadataRetriever` with the new retriever in hot paths.** Pick one, migrate the rest.
-- **Expecting `MediaExtractorCompat` to work on encrypted content without DRM provisioning.** It does not. Widevine content requires a full `ExoPlayer`.
+- **Calling the inspector on the main thread.**
+- **Forgetting `.use { ... }`.**
+- **Unbounded parallelism in batch jobs.**
+- **Treating `getFrame` output as a pooled bitmap.**
+- **Mixing `android.media.MediaMetadataRetriever` with the new retriever in hot paths.**
+- **Expecting `MediaExtractorCompat` to work on encrypted content without DRM provisioning.**

@@ -1,6 +1,6 @@
 ---
 name: media3-bandwidth-abr
-description: Use this skill to configure bandwidth estimation and adaptive bitrate (ABR) behavior in AndroidX Media3 1.9.0. Use this skill to build a DefaultBandwidthMeter, share one BandwidthMeter between ExoPlayer and DefaultPreloadManager, tune TrackSelectionParameters bounds, detect network type via C.NetworkType, size DefaultLoadControl buffers for mobile, and avoid common low-bitrate ABR failure modes.
+description: Use this skill to configure bandwidth estimation and adaptive bitrate (ABR) behavior in AndroidX Media3 1.10.0. Use this skill to build a DefaultBandwidthMeter, share one BandwidthMeter between ExoPlayer and DefaultPreloadManager, tune TrackSelectionParameters bounds, detect network type via C.NetworkType, size DefaultLoadControl buffers for mobile, and avoid common low-bitrate ABR failure modes.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -22,24 +22,23 @@ metadata:
 ## Prerequisites
 
 - Project **MUST** use `minSdk` 21 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later.
-- Project **MUST NOT** set `TrackSelectionParameters.setMaxVideoBitrate` below the lowest variant in the ladder. The player will resolve zero playable tracks.
+- Project **MUST** pin Media3 to **1.10.0** or later.
+- Project **MUST NOT** set `TrackSelectionParameters.setMaxVideoBitrate` below the lowest variant in the ladder.
 - Project **MUST NOT** share a `BandwidthMeter` singleton across unrelated processes.
-- The pack does not ship a custom `TrackSelector`. Use `DefaultTrackSelector` with `TrackSelectionParameters`.
 
 ## Step 1: plan
 
-1. Enumerate every place that constructs `ExoPlayer.Builder`. Each builder receives the same `BandwidthMeter` singleton.
-2. Identify the ABR ladder the backend serves. Confirm the mobile UI never requests a bitrate above a sensible cap (usually 6 Mbps for phones).
-3. Decide what "Auto" quality means in the UI. Usually: no bitrate ceiling, let ABR choose.
-4. Plan `DefaultLoadControl` buffer sizes for mobile. The default `maxBufferMs` is tuned for TV-class buffers and wastes mobile memory.
+1. Enumerate every place that constructs `ExoPlayer.Builder`.
+2. Identify the ABR ladder the backend serves.
+3. Decide what "Auto" quality means in the UI.
+4. Plan `DefaultLoadControl` buffer sizes for mobile.
 5. Confirm that on "Wi-Fi only" mode, the app checks network type before starting playback.
 
 ## Step 2: Gradle dependencies
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 
 [libraries]
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
@@ -69,18 +68,7 @@ val player = ExoPlayer.Builder(context)
     .build()
 ```
 
-### WRONG
-
-```kotlin
-// WRONG: one BandwidthMeter per activity loses historical bitrate samples on every rotation
-class MainActivity : ComponentActivity() {
-    private val meter = DefaultBandwidthMeter.Builder(this).build()
-}
-```
-
 ## Step 4: share the BandwidthMeter with PreloadManager
-
-Preloading and active playback contend for the same pipe. The 1.9.0 `DefaultPreloadManager` can share a single `BandwidthMeter` with the player. Without sharing, an aggressive preload can starve the active stream.
 
 ```kotlin
 import androidx.media3.exoplayer.source.preload.DefaultPreloadManager
@@ -89,8 +77,6 @@ val preloadManager = DefaultPreloadManager.Builder(MediaSingletons.bandwidthMete
     .setContext(context)
     .build()
 ```
-
-**DO NOT** construct a second `DefaultBandwidthMeter` for the preload manager.
 
 ## Step 5: bound TrackSelectionParameters
 
@@ -108,16 +94,6 @@ fun mobileDefaults(context: Context): TrackSelectionParameters =
         .build()
 
 player.trackSelectionParameters = mobileDefaults(context)
-```
-
-For a "Data saver" preference, lower the bound:
-
-```kotlin
-val dataSaver = player.trackSelectionParameters.buildUpon()
-    .setMaxVideoSize(640, 360)
-    .setMaxVideoBitrate(600_000)
-    .build()
-player.trackSelectionParameters = dataSaver
 ```
 
 ### WRONG
@@ -138,8 +114,6 @@ import androidx.media3.common.util.NetworkTypeObserver
 fun currentMediaNetworkType(context: Context): Int =
     NetworkTypeObserver.getInstance(context).networkType
 ```
-
-`C.NetworkType` values map to `NETWORK_TYPE_WIFI`, `NETWORK_TYPE_4G`, `NETWORK_TYPE_3G`, `NETWORK_TYPE_2G`, `NETWORK_TYPE_CELLULAR_UNKNOWN`, `NETWORK_TYPE_OFFLINE`, `NETWORK_TYPE_UNKNOWN`. Use this to gate "Wi-Fi only" playback and to report ABR context in analytics.
 
 ## Step 7: tune DefaultLoadControl for mobile
 
@@ -164,7 +138,7 @@ val player = ExoPlayer.Builder(context)
     .build()
 ```
 
-**DO NOT** set `maxBufferMs` above 5 minutes on a mobile app. It starves memory and trips the 1.9.0 PreloadManager memory guard.
+**DO NOT** set `maxBufferMs` above 5 minutes on a mobile app. It starves memory and trips the 1.10.0 PreloadManager memory guard.
 
 ## Step 8: log ABR switches
 
@@ -186,19 +160,17 @@ player.addAnalyticsListener(listener)
 
 ## Step 9: low-bitrate failure modes
 
-On 2G or weak Wi-Fi, the default ABR can overestimate and keep picking a variant the network cannot sustain. Mitigations:
-
-- Set a realistic `initialBitrateEstimate` per network type (Step 3).
-- On network type change, `player.prepare()` is not needed; `setResetOnNetworkTypeChange(true)` is sufficient.
-- For prolonged stalls, combine with `StuckPlayerException` handling (see `media3-background-playback-service` Step 8).
+- Set a realistic `initialBitrateEstimate` per network type.
+- On network type change, `setResetOnNetworkTypeChange(true)` is sufficient.
+- For prolonged stalls, combine with `StuckPlayerException` handling.
 
 ## Common pitfalls
 
-- **One `BandwidthMeter` per activity.** Loses history across rotations and process recreation.
-- **Separate `BandwidthMeter` for `PreloadManager`.** Preload starves active playback.
-- **Too-low `setMaxVideoBitrate`.** Zero playable variants.
-- **Pinned "Auto" quality with a high bitrate cap on cellular.** Burns user data.
-- **Huge `maxBufferMs`.** Memory pressure and PreloadManager guard trips.
-- **Not checking `C.NetworkType` before playback on "Wi-Fi only" mode.** Cellular usage sneaks in.
-- **Ignoring the initial bitrate estimate.** First-segment selection is poor on cold start.
-- **Using a custom `TrackSelector` instead of tuning `TrackSelectionParameters`.** Reinvents ABR badly.
+- **One `BandwidthMeter` per activity.**
+- **Separate `BandwidthMeter` for `PreloadManager`.**
+- **Too-low `setMaxVideoBitrate`.**
+- **Pinned "Auto" quality with a high bitrate cap on cellular.**
+- **Huge `maxBufferMs`.**
+- **Not checking `C.NetworkType` before playback on "Wi-Fi only" mode.**
+- **Ignoring the initial bitrate estimate.**
+- **Using a custom `TrackSelector` instead of tuning `TrackSelectionParameters`.**
