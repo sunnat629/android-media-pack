@@ -1,0 +1,74 @@
+name: bootstrap-releases
+
+on:
+  push:
+    paths:
+      - '.github/workflows/bootstrap-releases.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    name: Create initial tags and Releases
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create and push initial tags
+        run: |
+          set -e
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a v1.0.0 5dcaa9eec07a0239dabb880d32cde44fbdf43e9 -m 'v1.0.0 — Tier 1 skills' 2>/dev/null || true
+          git tag -a v1.1.0 1dd86dd58c608a7a911238822e47010a0ba057cb -m 'v1.1.0 — Tier 2 skills' 2>/dev/null || true
+          git tag -a v1.2.0 16a19a39e73d672e38b2236a2385225ab07b03e2 -m 'v1.2.0 — Tier 3 skills + open source launch' 2>/dev/null || true
+          git push origin v1.0.0 v1.1.0 v1.2.0 || true
+
+      - name: Extract release notes for all three versions
+        run: |
+          set -e
+          for version in 1.0.0 1.1.0 1.2.0; do
+            awk -v v="$version" '
+              BEGIN { found = 0 }
+              $0 ~ "^## \\["v"\\]" { found = 1; next }
+              found && /^## \[/   { exit }
+              found               { print }
+            ' CHANGELOG.md > "notes-v${version}.md"
+            if ! [ -s "notes-v${version}.md" ]; then
+              printf '%s\n' "Release v${version}. See CHANGELOG.md." > "notes-v${version}.md"
+            fi
+            echo "--- v${version} ---"
+            cat "notes-v${version}.md"
+          done
+
+      - name: Publish v1.0.0 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: v1.0.0
+          body_path: notes-v1.0.0.md
+          draft: false
+          prerelease: false
+
+      - name: Publish v1.1.0 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.1.0
+          name: v1.1.0
+          body_path: notes-v1.1.0.md
+          draft: false
+          prerelease: false
+
+      - name: Publish v1.2.0 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.2.0
+          name: v1.2.0
+          body_path: notes-v1.2.0.md
+          draft: false
+          prerelease: false
