@@ -5,10 +5,11 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 ## [Unreleased]
 
 ### Changed
-- Every `SKILL.md` frontmatter now uses the SPDX `license: Apache-2.0` identifier instead of the free-form `Complete terms in LICENSE.txt` string.
-- `.markdownlint-cli2.jsonc` relaxes line-length and HTML rules so CI accepts the skill anatomy.
-- README exposes status badges (license, CI, latest release) and the full Tier 3 skill list.
-- `SECURITY.md` published.
+- **Renamed repository** from `shunnek-media-pack` to `android-media-skill`. Pack author remains **Shunnek Labs**.
+- README simplified: flat install layout, domain-grouped skill table, removed Tier headings and duplicate task map.
+- Removed `RELEASES.md`. Media3 version matrix lives in `REFERENCES.md`.
+- Consolidated issue templates: Bug + Feature only. Questions use GitHub Discussions.
+- Slimmed `COMPATIBILITY.md` and `CONTRIBUTING.md`.
 
 ## [1.2.0] - 2026-04-17
 
@@ -27,12 +28,13 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ### Added (repo scaffolding)
 - `LICENSE` (Apache 2.0), `README.md`, `CONTRIBUTING.md`, `COMPATIBILITY.md`, `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1).
-- PR template and issue templates (`bug_report`, `feature_request`, `docs`, `question`, plus `config.yml`).
+- PR template and issue templates, plus `config.yml`.
 - GitHub Actions CI: markdownlint, YAML frontmatter validation, skill size guard, shellcheck.
 - `scripts/check-skill-size.sh` enforcing the 20,000-character hard ceiling.
 
 ### Changed
 - Dropped the trailing `## Checklist` section from every `SKILL.md` to match the canonical anatomy used by `android/skills`.
+- Every `SKILL.md` frontmatter uses SPDX `license: Apache-2.0`.
 
 ## [1.1.0] - 2026-04-16
 
@@ -40,8 +42,7 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 - `media3-hls-dash-adaptive-streaming` v1.0 (Media3 1.9.0)
 - `media3-cast-integration` v1.0 (Media3 1.9.0)
 - `media3-inspector-metadata-thumbnails` v1.0 (Media3 1.9.0)
-- `RELEASES.md` tracking Media3 1.0.0 through 1.9.0 with the skill-to-version mapping.
-- `REFERENCES.md` with canonical docs and 15+ reference repositories.
+- `REFERENCES.md` with canonical docs and reference repositories.
 
 ## [1.0.0] - 2026-04-16
 
@@ -53,9 +54,8 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ### Meta
 - Initial repository scaffold: SKILL anatomy, issue types, label taxonomy.
-- Notion-based planning hub with Tasks and Issues databases mirrored to GitHub sub-issues.
 
-[Unreleased]: https://github.com/sunnat629/shunnek-media-pack/compare/v1.2.0...HEAD
-[1.2.0]: https://github.com/sunnat629/shunnek-media-pack/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/sunnat629/shunnek-media-pack/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/sunnat629/shunnek-media-pack/releases/tag/v1.0.0
+[Unreleased]: https://github.com/sunnat629/android-media-skill/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/sunnat629/android-media-skill/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/sunnat629/android-media-skill/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/sunnat629/android-media-skill/releases/tag/v1.0.0

@@ -1,4 +1,4 @@
-# Contributing to shunnek-media-pack
+# Contributing to android-media-skill
 
 Thanks for wanting to contribute. This pack ships Android Skills that engineers and AI agents trust on first read and still trust six months later. Contributions that uphold that bar are welcome.
 
@@ -7,7 +7,7 @@ Thanks for wanting to contribute. This pack ships Android Skills that engineers 
 1. Read [COMPATIBILITY.md](COMPATIBILITY.md) to confirm your toolchain matches the pack's target.
 2. Read [REFERENCES.md](REFERENCES.md). Citations **MUST** resolve to one of the canonical sources or to the current Media3 release notes.
 3. Agree to the [Code of Conduct](CODE_OF_CONDUCT.md).
-4. Open an Issue before you start coding non-trivial changes. Use the templates in `.github/ISSUE_TEMPLATE/`. For general questions, use [Discussions](https://github.com/sunnat629/shunnek-media-pack/discussions).
+4. Open an Issue before you start coding non-trivial changes. Use the templates in `.github/ISSUE_TEMPLATE/`. For general questions, use [Discussions](https://github.com/sunnat629/android-media-skill/discussions).
 
 ## Issue types
 
