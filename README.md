@@ -4,15 +4,15 @@
 [![CI](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml)
 [![Media3](https://img.shields.io/badge/Media3-1.9.0-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
-Android skills for AI coding agents to build with **AndroidX Media3 1.9.0**. Drop them into your project or your global skills directory, then prompt your agent. 18 skills covering migration, playback, DRM, streaming, ads, and analytics. Published by **Shunnek Labs**.
+Android skills for AI coding agents to build with **AndroidX Media3 1.9.0**. 18 skills covering migration, playback, DRM, streaming, ads, and analytics. Published by **Shunnek Labs**.
+
+Each skill is a folder with a single `SKILL.md`. There is no universal skills folder, every agent reads its own location. Pick the section for your agent below.
 
 ## Install
 
-Pick the path that matches your agent. The pack ships 18 skill folders, each containing a single `SKILL.md`.
+### 1. Android CLI / Gemini in Android Studio
 
-### 1. Android CLI (recommended for terminal use)
-
-Install once, use from any Android project.
+User-scoped. Install once, use from any project. `android skills list` reads `~/.android/skills/`.
 
 ```bash
 mkdir -p ~/.android/skills
@@ -26,72 +26,75 @@ Verify:
 android skills list
 # migrate-exoplayer-to-media3
 # media3-background-playback-service
-# media3-drm-widevine-setup
 # ... 18 total
-```
 
-Then from any project:
-
-```bash
 android "Migrate this project from ExoPlayer 2.x to Media3 1.9.0"
 ```
 
-**Prefer a grouped install?** If you want all 18 skills namespaced under a single folder (for easier removal), install into a sub-directory:
+Gemini in Android Studio reads the same directory. Invoke with `@migrate-exoplayer-to-media3` in the chat.
 
-```bash
-mkdir -p ~/.android/skills/android-media-pack
-curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C ~/.android/skills/android-media-pack android-media-pack-main/.skills/media
-```
+### 2. Claude Code
 
-Note: whether the Android CLI discovers skills nested under a sub-directory depends on your CLI version. If `android skills list` returns empty after a nested install, fall back to the flat install above.
-
-### 2. Project-level (Claude Code, Cursor, Cline, Continue)
-
-Scoped to one repo. Commit the pack so teammates get the same skills.
+Project-scoped: reads `.claude/skills/` in the current repo.
 
 ```bash
 cd your-android-project
-mkdir -p .skills/android-media-pack
+mkdir -p .claude/skills
 curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .skills/android-media-pack android-media-pack-main/.skills/media
+  | tar -xz --strip-components=3 -C .claude/skills android-media-pack-main/.skills/media
 ```
 
-Result:
+User-scoped alternative: replace `.claude/skills` with `~/.claude/skills` to make the pack available in every project.
 
-```text
-your-android-project/
-├── .skills/
-│   └── android-media-pack/
-│       ├── migrate-exoplayer-to-media3/SKILL.md
-│       ├── media3-background-playback-service/SKILL.md
-│       └── ...
-├── app/
-└── build.gradle.kts
-```
+### 3. Cline
 
-### 3. Junie (JetBrains AI Assistant)
-
-Junie reads project guidelines from `.junie/guidelines.md`. After a project-level install, create or append:
+Project-scoped: reads `.clinerules/` as plain markdown.
 
 ```bash
+cd your-android-project
+mkdir -p .clinerules
+curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=3 -C .clinerules android-media-pack-main/.skills/media
+```
+
+Each `SKILL.md` lands at `.clinerules/<skill-name>/SKILL.md` and Cline reads them as rules.
+
+### 4. Junie (JetBrains AI Assistant)
+
+Junie reads a single file, `.junie/guidelines.md`. It does not auto-discover a skills folder. Reference the pack from that guidelines file:
+
+```bash
+cd your-android-project
 mkdir -p .junie
 cat >> .junie/guidelines.md <<'EOF'
 ## Media playback
-When asked to migrate or change media playback code, follow the matching skill under
-`.skills/android-media-pack/<skill-name>/SKILL.md`.
-Prefer `migrate-exoplayer-to-media3` for ExoPlayer 2.x migrations.
+When asked to migrate or change Media3 code, follow the matching skill from
+github.com/sunnat629/android-media-pack (branch main, folder .skills/media/<skill-name>/SKILL.md).
+
+Key skills:
+- `migrate-exoplayer-to-media3` for ExoPlayer 2.x migrations
+- `media3-background-playback-service` for background audio
+- `media3-drm-widevine-setup` for Widevine
+- `media3-compose-ui-material3` for Compose player UI
+
 Pin Media3 to 1.9.0.
 EOF
 ```
 
-### 4. Gemini in Android Studio
+For offline use, clone the repo somewhere on disk and inline the relevant `SKILL.md` content into `.junie/guidelines.md`.
 
-Skills under `~/.android/skills/` (from the CLI install) are picked up automatically. Invoke in chat with `@migrate-exoplayer-to-media3`.
+### 5. Cursor
+
+Cursor reads `.cursor/rules/*.mdc`, which is a **different format** (frontmatter plus `@`-scoped rules). The pack does not ship `.mdc` files yet. Workarounds:
+
+1. Symlink or copy a specific `SKILL.md` into `.cursor/rules/`, renaming it to `<skill>.mdc`. Cursor will still parse the markdown body but frontmatter keys will be ignored.
+2. Or keep the pack under `.claude/skills/` (see above) and reference the file in a Cursor composer prompt.
+
+First-class `.mdc` generation is tracked as a future Issue.
 
 ### Reproducible installs
 
-For reproducible installs, pin a release tag in place of `refs/heads/main` and the matching archive prefix:
+Pin a release tag in place of `refs/heads/main` and update the archive prefix:
 
 ```bash
 curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/tags/v1.2.0.tar.gz \
@@ -102,25 +105,19 @@ Re-run any install command to update.
 
 ## Use
 
-Prompt your agent in plain English. It picks the matching skill by reading each `description` line in the frontmatter.
+Prompt the agent in plain English. It matches the right skill by reading each `description:` line in the frontmatter.
 
 > Migrate this project from ExoPlayer 2.x to Media3 1.9.0.
 
-Works with Claude Code, Cursor, Cline, Continue, the Android CLI, Gemini in Android Studio, and Junie (via guidelines).
-
 ## Test it works
 
-Use this dry-run prompt against any agent and check the resulting diff:
-
-> Migrate this module from ExoPlayer 2.19.1 to Media3 1.9.0. Follow the project skill.
-
-Pass criteria:
+Dry-run prompt against any agent, then check the diff. Pass criteria:
 
 - Gradle: `com.google.android.exoplayer:exoplayer-*` removed, `androidx.media3:media3-*:1.9.0` added.
-- Imports: zero `com.google.android.exoplayer2` occurrences under `app/src`.
+- Zero `com.google.android.exoplayer2` imports under `app/src`.
 - `SimpleExoPlayer` replaced by `ExoPlayer`.
 - `MediaSessionConnector` replaced by `MediaSession` inside a `MediaSessionService`.
-- DRM wired through `DefaultDrmSessionManagerProvider`, not on a `MediaSource.Factory`.
+- DRM wired through `DefaultDrmSessionManagerProvider`.
 - `./gradlew :app:assembleDebug` succeeds.
 
 Any failure is a bug against the matching skill. File it via [Issues](https://github.com/sunnat629/android-media-pack/issues/new/choose).
@@ -142,7 +139,7 @@ All skills pin to Media3 **1.9.0**. See [COMPATIBILITY.md](COMPATIBILITY.md) for
 
 ## Related
 
-Complements [android/skills](https://github.com/android/skills). Same format, same folder layout. Prefer the canonical `android/skills` when a skill exists in both.
+Complements [android/skills](https://github.com/android/skills). Same folder layout, same frontmatter keys. Prefer the canonical `android/skills` when a skill exists in both.
 
 ## Docs
 
