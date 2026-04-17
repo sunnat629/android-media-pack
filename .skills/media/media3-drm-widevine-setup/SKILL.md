@@ -1,6 +1,6 @@
 ---
 name: media3-drm-widevine-setup
-description: Use this skill to set up Widevine DRM end to end in an Android app using AndroidX Media3 1.9.0. Use this skill to wire DefaultDrmSessionManagerProvider onto DefaultMediaSourceFactory, construct MediaItem.DrmConfiguration with C.WIDEVINE_UUID, pass license URL with custom HTTP headers, acquire and release offline licenses with OfflineLicenseHelper, detect Widevine L1 vs L3 security levels, handle HDCP policy gating, and recover from provisioning and license failure modes.
+description: Use this skill to set up Widevine DRM end to end in an Android app using AndroidX Media3 1.10.0. Use this skill to wire DefaultDrmSessionManagerProvider onto DefaultMediaSourceFactory, construct MediaItem.DrmConfiguration with C.WIDEVINE_UUID, pass license URL with custom HTTP headers, acquire and release offline licenses with OfflineLicenseHelper, detect Widevine L1 vs L3 security levels, handle HDCP policy gating, and recover from provisioning and license failure modes.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -24,7 +24,7 @@ metadata:
 ## Prerequisites
 
 - Project **MUST** use `minSdk` 21 or later. Widevine APIs below that level are not supported by Media3.
-- Project **MUST** pin Media3 to **1.9.0** or later.
+- Project **MUST** pin Media3 to **1.10.0** or later.
 - App **MUST** target streams packaged with Widevine CENC. ClearKey and PlayReady are out of scope for this skill.
 - Project **MUST NOT** pass a `DrmSessionManager` directly to a `MediaSource.Factory`. Use `DefaultDrmSessionManagerProvider` on `DefaultMediaSourceFactory` instead.
 - Project **MUST NOT** hardcode a license URL in the `MediaSource.Factory`. License URL belongs on the `MediaItem.DrmConfiguration`.
@@ -44,7 +44,7 @@ Before wiring DRM, enumerate the following:
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 
 [libraries]
 media3-exoplayer       = { module = "androidx.media3:media3-exoplayer",       version.ref = "media3" }
