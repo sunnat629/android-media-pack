@@ -63,14 +63,7 @@ media3-cast                     = { module = "androidx.media3:media3-cast",     
 
 ## Step 3: rewrite package imports
 
-Prefer a scripted rewrite (see `scripts/rewrite-imports.sh`) over manual search-and-replace. Key mappings:
-
-- `com.google.android.exoplayer2.SimpleExoPlayer` to `androidx.media3.exoplayer.ExoPlayer`
-- `com.google.android.exoplayer2.Player` to `androidx.media3.common.Player`
-- `com.google.android.exoplayer2.ui.StyledPlayerView` to `androidx.media3.ui.PlayerView`
-- `com.google.android.exoplayer2.upstream.cache.SimpleCache` to `androidx.media3.datasource.cache.SimpleCache`
-- `com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector` removed, use `androidx.media3.session.MediaSession`
-- `com.google.android.exoplayer2.ext.cast.CastPlayer` to `androidx.media3.cast.CastPlayer` (rewritten API)
+Prefer a scripted rewrite over manual search-and-replace. A minimal helper lives at `references/rewrite-imports.sh`. The full package mapping table lives at `references/package-mapping.md`.
 
 ## Step 4: replace SimpleExoPlayer
 
@@ -130,7 +123,9 @@ val mediaSession = MediaSessionCompat(context, "tag")
 val connector = MediaSessionConnector(mediaSession).apply { setPlayer(player) }
 ```
 
-## Step 6: use setMediaButtonPreferences (Media3 1.10.0)
+## Step 6: media button preferences
+
+Media3 1.10.0 replaces `setCustomLayout` with `setMediaButtonPreferences`. See `references/media3-1.10-api-changes.md` for the full API note. Summary example:
 
 ### RIGHT
 
@@ -215,6 +210,8 @@ val session = MediaSession.Builder(context, castPlayer).build()
 Use `@OptIn(UnstableApi::class)` only at the narrowest scope. **DO NOT** add a global `-opt-in=androidx.media3.common.util.UnstableApi` compiler flag.
 
 ## Step 10: adopt simplified ExoPlayer APIs (Media3 1.10.0)
+
+See `references/media3-1.10-api-changes.md` for the full list. Highlights:
 
 - **Mute and unmute:** use `player.mute()` and `player.unmute()` instead of caching the previous volume manually.
 - **Stuck player detection:** listen for `StuckPlayerException` in `Player.Listener.onPlayerError` and surface it in analytics.
