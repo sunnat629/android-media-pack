@@ -4,12 +4,21 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-04-17
+
 ### Changed
-- **Renamed repository** from `shunnek-media-pack` to `android-media-skill`. Pack author remains **Shunnek Labs**.
-- README simplified: flat install layout, domain-grouped skill table, removed Tier headings and duplicate task map.
+- **Renamed repository** from `shunnek-media-pack` to `android-media-skill`. Pack author remains **Shunnek Labs**. Individual skill names are unchanged.
+- README rewritten: flat install with a single `tar --strip-components=2` one-liner landing files at `.skills/media/<name>/SKILL.md`, domain-grouped skill table, `Install` and `Use-with-agent` sections, badges.
 - Removed `RELEASES.md`. Media3 version matrix lives in `REFERENCES.md`.
-- Consolidated issue templates: Bug + Feature only. Questions use GitHub Discussions.
-- Slimmed `COMPATIBILITY.md` and `CONTRIBUTING.md`.
+- Consolidated issue templates: `bug_report` and `feature_request` only. Questions use GitHub Discussions via a contact link in `config.yml`.
+- Slimmed `COMPATIBILITY.md` to a single toolchain table + device matrix.
+- Trimmed `CONTRIBUTING.md`: removed agent-ops phase workflow and DCO paragraph.
+
+### Added
+- `.github/workflows/release.yml` auto-publishes a GitHub Release on every `v*.*.*` tag push, using the matching `CHANGELOG.md` section as the release body.
+- `.github/workflows/bootstrap-releases.yml` (one-shot) seeded the historical `v1.0.0`, `v1.1.0`, `v1.2.0` Releases.
+- `SECURITY.md` published.
+- README status badges: License, CI, Media3 pin.
 
 ## [1.2.0] - 2026-04-17
 
@@ -55,7 +64,8 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 ### Meta
 - Initial repository scaffold: SKILL anatomy, issue types, label taxonomy.
 
-[Unreleased]: https://github.com/sunnat629/android-media-skill/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/sunnat629/android-media-skill/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/sunnat629/android-media-skill/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/sunnat629/android-media-skill/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/sunnat629/android-media-skill/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/sunnat629/android-media-skill/releases/tag/v1.0.0
