@@ -91,11 +91,23 @@ fun rememberMediaController(): Player? {
 }
 ```
 
+### WRONG
+
+```kotlin
+// WRONG: constructing ExoPlayer inside a composable leaks the player across recompositions
+@Composable
+fun BadPlayer() {
+    val context = LocalContext.current
+    val player = remember { ExoPlayer.Builder(context).build() }
+}
+```
+
 ## Step 4: render a video with ContentFrame
 
 ### RIGHT
 
 ```kotlin
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -117,10 +129,8 @@ fun PlayerUi(player: Player, modifier: Modifier = Modifier) {
     Column(modifier) {
         ContentFrame(player = player, modifier = Modifier.fillMaxWidth())
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp),
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             SeekBackButton(player = player)
@@ -131,12 +141,28 @@ fun PlayerUi(player: Player, modifier: Modifier = Modifier) {
 }
 ```
 
-## Step 5: observe player state with composable helpers
+### WRONG
 
 ```kotlin
+// WRONG: wrapping legacy PlayerView in AndroidView bypasses media3-ui-compose-material3
+@Composable
+fun BadPlayerUi(player: Player) {
+    AndroidView(factory = { ctx -> PlayerView(ctx).also { it.player = player } })
+}
+```
+
+## Step 5: observe player state with composable helpers
+
+### RIGHT
+
+```kotlin
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
 import androidx.media3.ui.compose.state.rememberPresentationState
 
@@ -152,7 +178,11 @@ fun PlayerHeader(player: Player) {
 }
 ```
 
+**DO NOT** attach a raw `Player.Listener` from a composable without wrapping it in `DisposableEffect`. The listener will leak across recompositions.
+
 ## Step 6: scope UnstableApi opt-ins narrowly
+
+### RIGHT
 
 ```kotlin
 @OptIn(UnstableApi::class)
@@ -160,20 +190,38 @@ fun PlayerHeader(player: Player) {
 fun PlayerScreen(player: Player) { /* ... */ }
 ```
 
+### WRONG
+
+```kotlin
+// WRONG in build.gradle.kts: a global opt-in hides accidental UnstableApi use
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-opt-in=androidx.media3.common.util.UnstableApi")
+    }
+}
+```
+
 ## Step 7: respect lifecycle
+
+### RIGHT
 
 ```kotlin
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.Lifecycle
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
 fun PlayerGate(content: @Composable () -> Unit) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     var active by remember { mutableStateOf(lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
     DisposableEffect(lifecycle) {
-        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+        val observer = LifecycleEventObserver { _, event ->
             active = event.targetState.isAtLeast(Lifecycle.State.STARTED)
         }
         lifecycle.addObserver(observer)
@@ -185,6 +233,8 @@ fun PlayerGate(content: @Composable () -> Unit) {
 
 ## Step 8: theming and Material3 integration
 
+### RIGHT
+
 ```kotlin
 @Composable
 fun App() {
@@ -195,13 +245,15 @@ fun App() {
 }
 ```
 
+**PREFERRED** is inheriting button colors from the Material3 theme. Hard-coding colors on `PlayPauseButton` and the seek buttons breaks dynamic color support.
+
 ## Common pitfalls
 
-- **Creating `ExoPlayer` inside a composable.**
-- **Wrapping `PlayerView` in `AndroidView`.**
-- **Global `UnstableApi` opt-in.**
-- **Manual `Player.Listener` without `DisposableEffect`.**
-- **Hard-coded button colors.**
-- **Forgetting to release the `MediaController`.**
-- **Using the legacy PlayerView PiP path in Compose.**
-- **Blocking the main thread while awaiting the controller.**
+- **Creating `ExoPlayer` inside a composable.** Leaks the player across recompositions and configuration changes. Always go through `MediaController`.
+- **Wrapping `PlayerView` in `AndroidView`.** Defeats the purpose of `media3-ui-compose-material3`.
+- **Global `UnstableApi` opt-in.** Hides accidental usage of unstable APIs. Keep `@OptIn` at the narrowest scope.
+- **Manual `Player.Listener` without `DisposableEffect`.** Leaks listeners across recompositions.
+- **Hard-coded button colors.** Breaks dynamic color and theme switching.
+- **Forgetting to release the `MediaController`.** Hold the reference for the life of the composition and release in `onDispose`.
+- **Using the legacy `PlayerView` PiP path in Compose.** Compose owns its own PiP integration via `ContentFrame`.
+- **Blocking the main thread while awaiting the controller.** `buildAsync().addListener(...)` is the correct pattern; `get()` on the main thread will ANR.
