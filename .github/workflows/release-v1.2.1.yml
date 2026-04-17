@@ -24,7 +24,7 @@ jobs:
           set -e
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git tag -a v1.2.1 -m 'v1.2.1 — rename to android-media-skill + README overhaul' 2>/dev/null || true
+          git tag -a v1.2.1 -m 'v1.2.1, rename to android-media-pack + README overhaul' 2>/dev/null || true
           git push origin v1.2.1 || true
 
       - name: Extract release notes from CHANGELOG.md

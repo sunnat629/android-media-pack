@@ -7,6 +7,9 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 ### Fixed
 - **README install paths.** Replaced the unsupported `.skills/` target with `.agents/skills/` as the cross-agent default, and added a per-agent discovery matrix covering Claude Code, GitHub Copilot (CLI, VS Code, cloud), OpenCode, Gemini CLI, OpenAI Codex, and Cursor. A bare `.skills/` at the repo root is not scanned by any supported agent. (#77)
 
+### Changed
+- Completed the `android-media-skill` to `android-media-pack` rename across `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md` compare and release footnote URLs, and `.github/workflows/release-v1.2.1.yml` tag message.
+
 ## [1.2.1] - 2026-04-17
 
 ### Changed
@@ -67,8 +70,8 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 ### Meta
 - Initial repository scaffold: SKILL anatomy, issue types, label taxonomy.
 
-[Unreleased]: https://github.com/sunnat629/android-media-skill/compare/v1.2.1...HEAD
-[1.2.1]: https://github.com/sunnat629/android-media-skill/compare/v1.2.0...v1.2.1
-[1.2.0]: https://github.com/sunnat629/android-media-skill/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/sunnat629/android-media-skill/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/sunnat629/android-media-skill/releases/tag/v1.0.0
+[Unreleased]: https://github.com/sunnat629/android-media-pack/compare/v1.2.1...HEAD
+[1.2.1]: https://github.com/sunnat629/android-media-pack/compare/v1.2.0...v1.2.1
+[1.2.0]: https://github.com/sunnat629/android-media-pack/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/sunnat629/android-media-pack/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/sunnat629/android-media-pack/releases/tag/v1.0.0
