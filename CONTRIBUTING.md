@@ -7,20 +7,18 @@ Thanks for wanting to contribute. This pack ships Android Skills that engineers 
 1. Read [COMPATIBILITY.md](COMPATIBILITY.md) to confirm your toolchain matches the pack's target.
 2. Read [REFERENCES.md](REFERENCES.md). Citations **MUST** resolve to one of the canonical sources or to the current Media3 release notes.
 3. Agree to the [Code of Conduct](CODE_OF_CONDUCT.md).
-4. Open an Issue before you start coding non-trivial changes. Use the templates in `.github/ISSUE_TEMPLATE/`.
+4. Open an Issue before you start coding non-trivial changes. Use the templates in `.github/ISSUE_TEMPLATE/`. For general questions, use [Discussions](https://github.com/sunnat629/shunnek-media-pack/discussions).
 
 ## Issue types
 
-- **Bug:** a shipped skill has an incorrect API, an example that does not compile, or a claim that is false on the current Media3 release.
+- **Bug:** a shipped skill has an incorrect API, an example that does not compile, or a claim that is false on the current Media3 release. Docs typos also use the Bug template with a `type-docs` label.
 - **Feature:** a new skill, or a new major section inside an existing skill.
-- **Docs:** a typo, unclear wording, or a broken link.
-- **Question:** clarification on an API or workflow.
 
 ## Skill anatomy (non-negotiable)
 
 Every skill `SKILL.md` **MUST** include these five blocks, in this order:
 
-1. **YAML frontmatter** with `name`, `description` beginning with *"Use this skill to ..."*, `license`, `metadata.author`, `metadata.version`, `metadata.target_media3_version`, `metadata.last_reviewed`, and `keywords`.
+1. **YAML frontmatter** with `name`, `description` beginning with *"Use this skill to ..."*, SPDX `license: Apache-2.0`, `metadata.author`, `metadata.version`, `metadata.target_media3_version`, `metadata.last_reviewed`, and `metadata.keywords`.
 2. **Prerequisites** with hard **MUST** and **MUST NOT** gates.
 3. **Step 1: plan** describing what the agent should grep, enumerate, and flag before editing code.
 4. **Numbered steps**, each step one atomic concept, with **RIGHT** and **WRONG** code pairs for every non-trivial pattern.
@@ -29,7 +27,7 @@ Every skill `SKILL.md` **MUST** include these five blocks, in this order:
 ## Size budget
 
 - Target **10,000 to 18,000 characters** in the `SKILL.md` body.
-- Hard ceiling **20,000 characters**. CI enforces this. Move overflow to `references/*.md` companions and link with relative paths.
+- Hard ceiling **20,000 characters**. CI enforces this via `scripts/check-skill-size.sh`. Move overflow to `references/*.md` companions and link with relative paths.
 
 ## Style
 
@@ -38,23 +36,11 @@ Every skill `SKILL.md` **MUST** include these five blocks, in this order:
 - Use **MUST**, **MUST NOT**, **DO NOT**, **PREFERRED** in bold.
 - Every code block **MUST** be tagged with a language (`kotlin`, `xml`, `toml`, `bash`).
 
-## Seven-phase authoring workflow
-
-For a new skill:
-
-1. **Scope** the workflow the skill owns.
-2. **Source** authoritative references from the current Media3 release and `androidx/media` source.
-3. **Validate** with a toy validation plan (minimal app, Media3 version, device API levels, pass/fail scenarios).
-4. **Draft** the `SKILL.md` under `.skills/media/<skill-name>/SKILL.md`.
-5. **Dry run** the skill against a real prompt. File any mismatches as Bug or Docs Issues.
-6. **Review** by at least one peer reviewer on the PR.
-7. **Publish** via squash merge to `main`.
-
 ## Pull request flow
 
 1. Fork the repo, branch from `main`, name your branch `skill/<name>`, `fix/<short>`, or `docs/<short>`.
 2. Follow the PR template in [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md).
-3. CI **MUST** be green before review.
+3. CI **MUST** be green before review (markdownlint, YAML frontmatter validation, skill size guard, shellcheck).
 4. At least one approving review is required.
 5. We squash-merge. The commit message will include the issue reference.
 
@@ -76,13 +62,11 @@ If a community source contradicts the release notes, trust the release notes and
 - `media3-transformer-editing`
 - Any API marked `@ExperimentalApi` in the current Media3 release, including `CompositionPlayer`.
 
-Tier 3 ideas become Feature Issues, not surprise skills.
+Post-v1.2 ideas become Tier 4 Feature Issues, not surprise skills.
 
-## DCO and CLA
+## License and DCO
 
-This project does not require a CLA. All contributions are accepted under the [Apache License 2.0](LICENSE) as per Section 5 of the license text.
-
-Use `git commit -s` to sign off your commits if you want an auditable DCO-style record. This is optional today but may become required.
+All contributions are accepted under the [Apache License 2.0](LICENSE) as per Section 5 of the license text. No CLA and no DCO sign-off is required.
 
 ## Reviewing skills
 
@@ -94,3 +78,7 @@ Reviewers should verify:
 - Body is between 10k and 20k characters.
 - `metadata.last_reviewed` is the date of the publish commit.
 - No `@ExperimentalApi` class appears in any RIGHT example.
+
+## Relationship to android/skills
+
+This pack complements [android/skills](https://github.com/android/skills) with Media3-specific depth. If the skill you are proposing is platform-wide rather than Media3-specific, consider upstreaming it to `android/skills` instead.

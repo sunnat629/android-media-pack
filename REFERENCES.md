@@ -2,6 +2,16 @@
 
 Curated list of trusted sources consulted when authoring and auditing skills in this pack. When a skill cites an API, the citation **MUST** resolve to one of the sources below or to the current Media3 release notes. Community posts are allowed sparingly and marked clearly.
 
+## Pack → Media3 version matrix
+
+| Pack version | Media3 | Tier shipped |
+|---|---|---|
+| 1.0.0 | 1.9.0 | Tier 1 (4 skills) |
+| 1.1.0 | 1.9.0 | Tier 2 (3 skills) |
+| 1.2.0 | 1.9.0 | Tier 3 (11 skills) |
+
+All shipped skills target **Media3 1.9.0** (released 19 December 2025). For upstream Media3 release history, see the [Media3 release notes](https://developer.android.com/jetpack/androidx/releases/media3).
+
 ## Official sources (canonical)
 
 - AndroidX Media3 release notes: https://developer.android.com/jetpack/androidx/releases/media3
@@ -54,28 +64,13 @@ These are production or production-adjacent projects that are safe to consult fo
   https://github.com/Doikki/DKVideoPlayer
 - **brianwernick/ExoMedia** — Mature ExoPlayer wrapper library. Reference for a lightweight high-level API over the low-level Media3 primitives. Useful as a pattern, not a dependency.
   https://github.com/brianwernick/ExoMedia
-- **yangchaojiang/yjPlay** — Video player library (Chinese community). Legacy ExoPlayer, reference for player skin / controller decomposition.
-  https://github.com/yangchaojiang/yjPlay
 - **MasayukiSuda/ExoPlayerFilter** — ExoPlayer integration with GPUImage-style GL filters. Reference for custom `GlEffect` chains and video filter pipelines.
   https://github.com/MasayukiSuda/ExoPlayerFilter
-- **bluemeanie2-3/KidTube** — YouTube-like kids app. Reference for content gating, parental controls, and kid-safe playback patterns over Media3.
-  https://github.com/bluemeanie2-3/KidTube
 
 ### Music / audio app references
 
 - **Hamza417/Felicity** — Offline-first music player. Reference for library indexing, metadata, lock-screen transport, and service lifecycle.
   https://github.com/Hamza417/Felicity
-- **caiyonglong/MusicLake** — Multi-source music player (online + offline). Reference for aggregating audio sources behind a single `Player`.
-  https://github.com/caiyonglong/MusicLake
-- **ZahraHeydari/MusicPlayer** — Compact music player reference. Reference for minimal `MediaSession` + service wiring.
-  https://github.com/ZahraHeydari/MusicPlayer
-- **rychardsonaguar-art/qiaomu-music-player-ncm** — NCM-format music player. Reference for custom decoder integration and proprietary audio format handling.
-  https://github.com/rychardsonaguar-art/qiaomu-music-player-ncm
-- **rawnaldclark/Stash** — Personal media stash / player. Reference for local media discovery patterns.
-  https://github.com/rawnaldclark/Stash
-
-### Multiplatform references
-
 - **SEAbdulbasit/MusicApp-KMP** — Kotlin Multiplatform music app. Reference for separating shared business logic from the Android-specific Media3 playback layer.
   https://github.com/SEAbdulbasit/MusicApp-KMP
 
