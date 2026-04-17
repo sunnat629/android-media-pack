@@ -4,6 +4,9 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ## [Unreleased]
 
+### Fixed
+- **README install paths.** Replaced the unsupported `.skills/` target with `.agents/skills/` as the cross-agent default, and added a per-agent discovery matrix covering Claude Code, GitHub Copilot (CLI, VS Code, cloud), OpenCode, Gemini CLI, OpenAI Codex, and Cursor. A bare `.skills/` at the repo root is not scanned by any supported agent. (#77)
+
 ## [1.2.1] - 2026-04-17
 
 ### Changed
