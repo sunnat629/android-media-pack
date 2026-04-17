@@ -25,16 +25,17 @@ metadata:
 
 - Project **MUST** use `minSdk` 21 or later.
 - Project **MUST** pin Media3 to **1.10.0** or later.
-- Project **MUST** declare `media3-exoplayer-hls` for HLS and `media3-exoplayer-dash` for DASH.
-- Project **MUST NOT** construct `HlsMediaSource.Factory` or `DashMediaSource.Factory` directly.
+- Project **MUST** declare `media3-exoplayer-hls` for HLS and `media3-exoplayer-dash` for DASH. Declaring one does not transitively pull in the other.
+- Project **MUST NOT** construct `HlsMediaSource.Factory` or `DashMediaSource.Factory` directly on the `ExoPlayer.Builder`. Use `DefaultMediaSourceFactory` with the correct MIME type on each `MediaItem`.
+- Low-latency HLS is scoped out of v1.x. It will land in a future `media3-low-latency-live` skill.
 
 ## Step 1: plan
 
-1. Enumerate every stream URL.
-2. Confirm each manifest is reachable over HTTPS.
-3. Decide whether the app needs adaptive video selection.
-4. Identify the maximum display resolution per device class.
-5. For live streams, decide a live offset target.
+1. Enumerate every stream URL. Group by protocol (HLS, DASH, SmoothStreaming, progressive).
+2. Confirm each manifest is reachable over HTTPS with a plausible `User-Agent`.
+3. Decide whether the app needs adaptive video selection across the full ladder, or whether a single quality is pinned by product policy.
+4. Identify the maximum display resolution per device class. `TrackSelectionParameters.setMaxVideoSize` bounds will prevent wasted bandwidth.
+5. For live streams, decide a live offset target (typically 3 to 15 seconds) and whether time-shifting to the DVR window is required.
 
 ## Step 2: Gradle dependencies
 
@@ -112,11 +113,13 @@ player.trackSelectionParameters = TrackSelectionParameters.Builder(context)
 ### WRONG
 
 ```kotlin
-// WRONG: rolling a custom TrackSelectionOverride for ABR breaks on manifest updates
+// WRONG: rolling a custom TrackSelectionOverride for ABR breaks on manifest updates and wastes battery
 val override = TrackSelectionOverride(trackGroup, listOf(0, 1, 2))
 player.trackSelectionParameters = player.trackSelectionParameters
     .buildUpon().addOverride(override).build()
 ```
+
+**DO NOT** set `setMaxVideoBitrate` below the lowest ladder rung. Media3 will fail to resolve any variant and surface `ERROR_CODE_IO_NO_PERMISSION` or an empty track list.
 
 ## Step 5: handle live vs VOD
 
@@ -140,7 +143,11 @@ val live = MediaItem.Builder()
     .build()
 ```
 
+**DO NOT** pin live playback to `playbackSpeed = 1.0f`. The player uses small speed adjustments to recover latency drift.
+
 ## Step 6: select subtitles with selectTextByDefault
+
+Media3 1.10.0 replaces hand-rolled subtitle overrides with a boolean on `TrackSelectionParameters`.
 
 ### RIGHT
 
@@ -152,7 +159,18 @@ player.trackSelectionParameters = player.trackSelectionParameters
     .build()
 ```
 
+### WRONG
+
+```kotlin
+// WRONG: synthesizing a TrackSelectionOverride to toggle subtitles ignores manifest changes
+val override = TrackSelectionOverride(textTrackGroup, listOf(0))
+player.trackSelectionParameters = player.trackSelectionParameters
+    .buildUpon().addOverride(override).build()
+```
+
 ## Step 7: bandwidth and buffering
+
+**PREFERRED** defaults are the `DefaultBandwidthMeter` and `DefaultLoadControl`. Override only when you have measured evidence of suboptimal behavior.
 
 ```kotlin
 import androidx.media3.exoplayer.DefaultLoadControl
@@ -194,5 +212,11 @@ player.addListener(object : Player.Listener {
 
 ## Common pitfalls
 
-- **Missing MIME type on the `MediaItem`.**
-- **Forget
+- **Missing MIME type on the `MediaItem`.** Without `MimeTypes.APPLICATION_M3U8` or `APPLICATION_MPD`, `DefaultMediaSourceFactory` falls back to progressive parsing and fails.
+- **Forgetting the protocol module.** `media3-exoplayer-hls` or `media3-exoplayer-dash` is required on the classpath.
+- **Hand-building `MediaSource.Factory` instances.** Bypasses DRM wiring and load-control hookup done by `DefaultMediaSourceFactory`.
+- **Low `setMaxVideoBitrate`.** A bound below the lowest variant resolves to zero playable tracks.
+- **Pinning `playbackSpeed = 1.0f` on live.** Disables latency recovery.
+- **Manual subtitle `TrackSelectionOverride`.** Prefer `setSelectTextByDefault` plus `setPreferredTextLanguage`.
+- **Oversized `maxBufferMs`.** Starves memory and trips the 1.10.0 PreloadManager memory guard.
+- **Ignoring `ERROR_CODE_BEHIND_LIVE_WINDOW`.** The player must be seeked back into the live window to recover.
