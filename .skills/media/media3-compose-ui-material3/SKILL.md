@@ -122,7 +122,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.ui.compose.material3.ContentFrame
+import androidx.media3.ui.compose.ContentFrame
 import androidx.media3.ui.compose.material3.PlayPauseButton
 import androidx.media3.ui.compose.material3.SeekBackButton
 import androidx.media3.ui.compose.material3.SeekForwardButton
