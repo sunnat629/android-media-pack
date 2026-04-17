@@ -1,6 +1,6 @@
 ---
 name: media3-lifecycle-state
-description: Use this skill to wire lifecycle-aware playback in an AndroidX Media3 1.9.0 app. Use this skill to obtain a MediaController via DisposableEffect, gate video decoding by activity lifecycle, persist playback position via SavedStateHandle, recover cleanly from configuration changes and system-initiated process death, and release the controller exactly once per host.
+description: Use this skill to wire lifecycle-aware playback in an AndroidX Media3 1.10.0 app. Use this skill to obtain a MediaController via DisposableEffect, gate video decoding by activity lifecycle, persist playback position via SavedStateHandle, recover cleanly from configuration changes and system-initiated process death, and release the controller exactly once per host.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -22,7 +22,7 @@ metadata:
 ## Prerequisites
 
 - Project **MUST** use `minSdk` 21 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later.
+- Project **MUST** pin Media3 to **1.10.0** or later.
 - Project **MUST** run playback inside a `MediaSessionService` (see the `media3-background-playback-service` skill). Lifecycle-aware wiring in this skill assumes the service is the owner of the `ExoPlayer`.
 - Project **MUST NOT** hold a static reference to the `ExoPlayer` from an activity, fragment, or composable.
 - Project **MUST NOT** release the `MediaController` on a screen rotation. Configuration changes are not process death.
@@ -39,7 +39,7 @@ metadata:
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 
 [libraries]
 media3-session = { module = "androidx.media3:media3-session", version.ref = "media3" }
