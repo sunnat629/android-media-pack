@@ -205,7 +205,7 @@ val castPlayer = CastPlayer.Builder(context).setLocalPlayer(exoPlayer).build()
 val session = MediaSession.Builder(context, castPlayer).build()
 ```
 
-**DO NOT** keep the pre-1.9.0 pattern where the app manually swapped the `Player` instance when a Cast device was selected.
+**DO NOT** keep the pre-1.10.0 pattern where the app manually swapped the `Player` instance when a Cast device was selected.
 
 ## Step 9: update PlayerView and adopt Compose UI
 
