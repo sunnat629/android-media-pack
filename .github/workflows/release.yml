@@ -1,0 +1,47 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          set -euo pipefail
+          tag="$GITHUB_REF_NAME"
+          version="${tag#v}"
+          echo "Extracting notes for version: $version"
+
+          awk -v v="$version" '
+            BEGIN { found = 0 }
+            $0 ~ "^## \\["v"\\]" { found = 1; next }
+            found && /^## \[/   { exit }
+            found               { print }
+          ' CHANGELOG.md > release-notes.md
+
+          if ! [ -s release-notes.md ]; then
+            printf '%s\n' "Release $tag. See CHANGELOG.md for details." > release-notes.md
+          fi
+
+          echo '--- release-notes.md ---'
+          cat release-notes.md
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.md
+          draft: false
+          prerelease: false
