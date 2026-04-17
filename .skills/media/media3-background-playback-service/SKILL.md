@@ -1,6 +1,6 @@
 ---
 name: media3-background-playback-service
-description: Use this skill to build a production-grade Android background playback service using AndroidX Media3 1.9.0. Use this skill to subclass MediaSessionService, construct an ExoPlayer wrapped by a MediaSession, declare the service with foregroundServiceType="mediaPlayback", hold the FOREGROUND_SERVICE_MEDIA_PLAYBACK permission, connect external controllers with MediaController.Builder, let the service generate the playback notification, honor Android 14+ user-initiated foreground service rules, and stop cleanly on onTaskRemoved.
+description: Use this skill to build a production-grade Android background playback service using AndroidX Media3 1.10.0. Use this skill to subclass MediaSessionService, construct an ExoPlayer wrapped by a MediaSession, declare the service with foregroundServiceType="mediaPlayback", hold the FOREGROUND_SERVICE_MEDIA_PLAYBACK permission, connect external controllers with MediaController.Builder, let the service generate the playback notification, honor Android 14+ user-initiated foreground service rules, and stop cleanly on onTaskRemoved.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -23,7 +23,7 @@ metadata:
 
 - Project **MUST** use `minSdk` 21 or later.
 - Project **MUST** use AGP 8.0 or later and Kotlin 1.9 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later. Earlier releases lack `mute()`, automatic wake lock, `setMediaButtonPreferences`, and the stuck-player detection referenced below.
+- Project **MUST** pin Media3 to **1.10.0** or later. Earlier releases lack `mute()`, automatic wake lock, `setMediaButtonPreferences`, and the stuck-player detection referenced below.
 - Project **MUST NOT** depend on both `androidx.media3.*` and legacy `com.google.android.exoplayer2.*` at the same time.
 - Project **MUST NOT** use `MediaSessionCompat` or `MediaSessionConnector`. Both are removed in Media3.
 - Project **MUST NOT** use `PlayerNotificationManager`. The `MediaSessionService` generates the notification in Media3.
@@ -35,7 +35,7 @@ Before writing any service code, do the following:
 
 1. Grep for `MediaSessionCompat`, `MediaSessionConnector`, `PlayerNotificationManager`, and `Service` subclasses that host playback. Flag each for removal or refactor.
 2. Enumerate every place the app constructs an `ExoPlayer`. For background playback, exactly one `ExoPlayer` instance **MUST** live inside the `MediaSessionService`. UI code **MUST** talk to it through a `MediaController`, never by holding a direct reference.
-3. Flag any `WakeLock` acquisition around playback. Media3 1.9.0 holds wake locks automatically. Manual acquisition is incorrect.
+3. Flag any `WakeLock` acquisition around playback. Media3 1.10.0 holds wake locks automatically. Manual acquisition is incorrect.
 4. Flag any `startForegroundService` calls for playback. The service **MUST** be started by `MediaController.connect` or by a user-visible action. Background code paths **MUST NOT** promote the service to the foreground on Android 14+.
 5. Confirm the manifest does not declare `android:stopWithTask="true"`. The service **MUST** handle task removal explicitly in `onTaskRemoved`.
 
@@ -43,7 +43,7 @@ Before writing any service code, do the following:
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 
 [libraries]
 media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
@@ -256,7 +256,7 @@ fun RequestNotificationPermission() {
 
 ## Step 7: customize the notification drawer with setMediaButtonPreferences
 
-In Media3 1.9.0, the notification transport drawer is configured declaratively. **DO NOT** use `setCustomLayout` for commands that map to built-in `Player.COMMAND_*` values.
+In Media3 1.10.0, the notification transport drawer is configured declaratively. **DO NOT** use `setCustomLayout` for commands that map to built-in `Player.COMMAND_*` values.
 
 ### RIGHT
 
@@ -291,7 +291,7 @@ session.setCustomLayout(
 
 ## Step 8: handle playback errors with StuckPlayerException
 
-Media3 1.9.0 dispatches `StuckPlayerException` when the player stalls without progress. Surface it in analytics and show a recoverable UI state.
+Media3 1.10.0 dispatches `StuckPlayerException` when the player stalls without progress. Surface it in analytics and show a recoverable UI state.
 
 ### RIGHT
 
@@ -340,7 +340,7 @@ override fun onTaskRemoved(rootIntent: Intent?) {
 
 - **Missing `foregroundServiceType`.** On Android 14+ the service cannot promote to the foreground without `android:foregroundServiceType="mediaPlayback"` in the manifest.
 - **Missing runtime `POST_NOTIFICATIONS` request.** On API 33+ the notification that `MediaSessionService` posts is silently suppressed if the permission was never granted.
-- **Manual wake lock around playback.** Media3 1.9.0 holds the wake lock itself. A second manual wake lock prevents the device from ever sleeping even after playback ends.
+- **Manual wake lock around playback.** Media3 1.10.0 holds the wake lock itself. A second manual wake lock prevents the device from ever sleeping even after playback ends.
 - **Holding a static reference to the player.** Bypasses `MediaController`, leaks on process death, and breaks Android Auto and Wear OS.
 - **Unconditional `stopSelf` in `onTaskRemoved`.** Breaks the primary background playback user experience.
 - **Multiple `ExoPlayer` instances.** Only one player **MUST** exist inside the service. Do not construct another player in the activity.
