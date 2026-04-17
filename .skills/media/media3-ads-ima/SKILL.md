@@ -1,6 +1,6 @@
 ---
 name: media3-ads-ima
-description: Use this skill to integrate Google IMA ads with AndroidX Media3 1.9.0, covering both client-side (CSAI) and server-side (SSAI / DAI) ad insertion. Use this skill to wire ImaAdsLoader into DefaultMediaSourceFactory, build ImaServerSideAdInsertionMediaSource for DAI streams, supply an AdViewProvider from a PlayerView or Compose host, handle companion ad slots, and distinguish ad playback errors from content errors.
+description: Use this skill to integrate Google IMA ads with AndroidX Media3 1.10.0, covering both client-side (CSAI) and server-side (SSAI / DAI) ad insertion. Use this skill to wire ImaAdsLoader into DefaultMediaSourceFactory, build ImaServerSideAdInsertionMediaSource for DAI streams, supply an AdViewProvider from a PlayerView or Compose host, handle companion ad slots, and distinguish ad playback errors from content errors.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -24,7 +24,7 @@ metadata:
 ## Prerequisites
 
 - Project **MUST** use `minSdk` 21 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later.
+- Project **MUST** pin Media3 to **1.10.0** or later.
 - Project **MUST** include `media3-exoplayer-ima` and depend on the Google IMA SDK for Android.
 - Project **MUST NOT** implement a separate ad player window on top of the content. Media3 integrates ad scheduling into the main `Player` timeline.
 - CSAI and SSAI are treated as two separate flows. **DO NOT** mix both in the same playlist.
@@ -45,7 +45,7 @@ metadata:
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 ima = "3.34.0"
 
 [libraries]
@@ -154,7 +154,7 @@ ssaiPlayer.setMediaItem(MediaItem.fromUri(ssaiUri))
 ssaiPlayer.prepare()
 ```
 
-**DO NOT** mix SSAI and CSAI in the same playlist. The 1.9.0 IMA extension does not support a second IMA server-side stream in the same session.
+**DO NOT** mix SSAI and CSAI in the same playlist. The 1.10.0 IMA extension does not support a second IMA server-side stream in the same session.
 
 ## Step 6: companion ads
 
@@ -223,7 +223,7 @@ override fun onDestroy() {
 - **Separate overlay Player for ads.** Media3 integrates ads in the main timeline. Two players thrash decoders.
 - **Missing `AdViewProvider`.** IMA cannot render ad overlays.
 - **Missing release of `ImaAdsLoader`.** Leaks across activity recreation.
-- **Mixing CSAI and SSAI in the same playlist.** Unsupported in 1.9.0.
+- **Mixing CSAI and SSAI in the same playlist.** Unsupported in 1.10.0.
 - **Retrying ad playback on every error.** IMA already retries.
 - **Not correlating ad and content analytics.** Product team loses visibility into ad-induced drop-off.
 - **Companion slots added after launch.** Hard to retrofit, ad ops usually negotiates at deal time.

@@ -1,6 +1,6 @@
 ---
 name: media3-hls-dash-adaptive-streaming
-description: Use this skill to configure HLS and DASH adaptive streaming in an Android app using AndroidX Media3 1.9.0. Use this skill to construct HlsMediaSource and DashMediaSource through DefaultMediaSourceFactory, tune TrackSelectionParameters for adaptive bitrate selection, handle live versus VOD playback behavior, configure buffering and bandwidth estimation, and avoid common pitfalls with HLS variants, DASH representations, and subtitle track selection.
+description: Use this skill to configure HLS and DASH adaptive streaming in an Android app using AndroidX Media3 1.10.0. Use this skill to construct HlsMediaSource and DashMediaSource through DefaultMediaSourceFactory, tune TrackSelectionParameters for adaptive bitrate selection, handle live versus VOD playback behavior, configure buffering and bandwidth estimation, and avoid common pitfalls with HLS variants, DASH representations, and subtitle track selection.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -24,7 +24,7 @@ metadata:
 ## Prerequisites
 
 - Project **MUST** use `minSdk` 21 or later.
-- Project **MUST** pin Media3 to **1.9.0** or later.
+- Project **MUST** pin Media3 to **1.10.0** or later.
 - Project **MUST** declare `media3-exoplayer-hls` for HLS and `media3-exoplayer-dash` for DASH. Declaring one does not transitively pull in the other.
 - Project **MUST NOT** construct `HlsMediaSource.Factory` or `DashMediaSource.Factory` directly on the `ExoPlayer.Builder`. Use `DefaultMediaSourceFactory` with the correct MIME type on each `MediaItem`.
 - Low-latency HLS is scoped out of v1.x. It will land in a future `media3-low-latency-live` skill.
@@ -41,7 +41,7 @@ metadata:
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 
 [libraries]
 media3-exoplayer      = { module = "androidx.media3:media3-exoplayer",      version.ref = "media3" }
@@ -143,11 +143,11 @@ val live = MediaItem.Builder()
     .build()
 ```
 
-**DO NOT** pin live playback to `playbackSpeed = 1.0f`. The player uses small speed adjustments to recover latency drift. Pinning it disables that recovery.
+**DO NOT** pin live playback to `playbackSpeed = 1.0f`. The player uses small speed adjustments to recover latency drift.
 
 ## Step 6: select subtitles with selectTextByDefault
 
-Media3 1.9.0 replaces hand-rolled subtitle overrides with a boolean on `TrackSelectionParameters`.
+Media3 1.10.0 replaces hand-rolled subtitle overrides with a boolean on `TrackSelectionParameters`.
 
 ### RIGHT
 
@@ -190,7 +190,7 @@ val player = ExoPlayer.Builder(context)
     .build()
 ```
 
-**DO NOT** set `maxBufferMs` above 5 minutes on a mobile app. It starves memory and trips the 1.9.0 PreloadManager memory guard.
+**DO NOT** set `maxBufferMs` above 5 minutes on a mobile app. It starves memory and trips the 1.10.0 PreloadManager memory guard.
 
 ## Step 8: handle HLS and DASH errors distinctly
 
@@ -218,5 +218,5 @@ player.addListener(object : Player.Listener {
 - **Low `setMaxVideoBitrate`.** A bound below the lowest variant resolves to zero playable tracks.
 - **Pinning `playbackSpeed = 1.0f` on live.** Disables latency recovery.
 - **Manual subtitle `TrackSelectionOverride`.** Prefer `setSelectTextByDefault` plus `setPreferredTextLanguage`.
-- **Oversized `maxBufferMs`.** Starves memory and trips the 1.9.0 PreloadManager memory guard.
+- **Oversized `maxBufferMs`.** Starves memory and trips the 1.10.0 PreloadManager memory guard.
 - **Ignoring `ERROR_CODE_BEHIND_LIVE_WINDOW`.** The player must be seeked back into the live window to recover.
