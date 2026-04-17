@@ -97,6 +97,8 @@ player.setMediaSource(hlsSource)
 
 ## Step 4: tune TrackSelectionParameters for ABR
 
+Key shape: cap the ladder with `setMaxVideoSize` and `setMaxVideoBitrate`. For the full tuning guide (bandwidth-meter overrides, buffering windows, device-class presets), see `references/abr-tuning.md`.
+
 ### RIGHT
 
 ```kotlin
@@ -170,7 +172,7 @@ player.trackSelectionParameters = player.trackSelectionParameters
 
 ## Step 7: bandwidth and buffering
 
-**PREFERRED** defaults are the `DefaultBandwidthMeter` and `DefaultLoadControl`. Override only when you have measured evidence of suboptimal behavior.
+**PREFERRED** defaults are the `DefaultBandwidthMeter` and `DefaultLoadControl`. Override only when you have measured evidence of suboptimal behavior. Tuning presets live in `references/abr-tuning.md`.
 
 ```kotlin
 import androidx.media3.exoplayer.DefaultLoadControl
@@ -192,7 +194,9 @@ val player = ExoPlayer.Builder(context)
 
 **DO NOT** set `maxBufferMs` above 5 minutes on a mobile app. It starves memory and trips the 1.10.0 PreloadManager memory guard.
 
-## Step 8: handle HLS and DASH errors distinctly
+## Step 8: handle HLS and DASH errors
+
+Manifest parsing, network, and live-window recovery each have distinct handlers. See `references/manifest-errors.md` for the full error matrix.
 
 ```kotlin
 import androidx.media3.common.PlaybackException
