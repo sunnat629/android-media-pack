@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
+  - name: Questions and discussion
+    url: https://github.com/sunnat629/shunnek-media-pack/discussions
+    about: For general questions, usage help, and open-ended discussion, use Discussions instead of an Issue.
   - name: Media3 release notes (upstream)
     url: https://developer.android.com/jetpack/androidx/releases/media3
     about: For Media3 API questions unrelated to this pack, consult the upstream release notes first.

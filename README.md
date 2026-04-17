@@ -50,19 +50,22 @@ All skills pin `metadata.target_media3_version` to **1.9.0** and are reviewed ag
 
 See [COMPATIBILITY.md](COMPATIBILITY.md) for the supported toolchain and platform matrix.
 
+## Relationship to android/skills
+
+`shunnek-media-pack` complements [android/skills](https://github.com/android/skills) with Media3-specific depth. Both use the same `SKILL.md` format and can be dropped into the same `.skills/` directory. If a skill exists in both packs, prefer `android/skills` as the canonical source.
+
 ## Docs
 
-- [RELEASES.md](RELEASES.md) — Media3 release history (1.0.0 to 1.9.0) and the pack's version mapping
-- [REFERENCES.md](REFERENCES.md) — trusted canonical sources and reference repositories
-- [CHANGELOG.md](CHANGELOG.md) — pack release notes
+- [REFERENCES.md](REFERENCES.md) — trusted canonical sources, reference repositories, and pack-to-Media3 version matrix
 - [COMPATIBILITY.md](COMPATIBILITY.md) — supported Media3, minSdk, AGP, Kotlin versions
+- [CHANGELOG.md](CHANGELOG.md) — pack release notes
 - [CONTRIBUTING.md](CONTRIBUTING.md) — how to contribute a skill, a fix, or a doc improvement
 - [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — Contributor Covenant 2.1
 - [SECURITY.md](SECURITY.md) — vulnerability reporting policy
 
 ## Contributing
 
-All contributions are welcome. Start by reading [CONTRIBUTING.md](CONTRIBUTING.md) and opening an Issue using one of the templates under [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/).
+All contributions are welcome. Start by reading [CONTRIBUTING.md](CONTRIBUTING.md) and opening an Issue using one of the templates under [`.github/ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE/). General questions go to [Discussions](https://github.com/sunnat629/shunnek-media-pack/discussions).
 
 ## License
 
