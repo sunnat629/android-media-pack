@@ -8,18 +8,40 @@ Android skills for AI coding agents to build with **AndroidX Media3 1.9.0**. Dro
 
 ## Install
 
+Agents do not scan a bare `.skills/` directory. Each agent reads from its own namespaced folder. The recommended cross-agent target is `.agents/skills/`, which is recognized by GitHub Copilot, OpenCode, Gemini CLI, and OpenAI Codex. Claude Code and Cursor read from their own directories (see matrix below).
+
+### Recommended (cross-agent, works with Copilot, OpenCode, Gemini CLI, Codex)
+
 ```bash
 cd your-android-project
-mkdir -p .skills
+mkdir -p .agents/skills
 curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=2 -C .skills android-media-skill-main/.skills/media
+  | tar -xz --strip-components=3 -C .agents/skills android-media-skill-main/.skills/media
 ```
 
-Result:
+### Claude Code
+
+```bash
+cd your-android-project
+mkdir -p .claude/skills
+curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=3 -C .claude/skills android-media-skill-main/.skills/media
+```
+
+### Cursor
+
+```bash
+cd your-android-project
+mkdir -p .cursor/skills
+curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=3 -C .cursor/skills android-media-skill-main/.skills/media
+```
+
+Result (recommended target shown):
 
 ```text
 your-android-project/
-├── .skills/media/
+├── .agents/skills/
 │   ├── migrate-exoplayer-to-media3/SKILL.md
 │   ├── media3-background-playback-service/SKILL.md
 │   └── ...
@@ -29,13 +51,24 @@ your-android-project/
 
 Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.0` and `android-media-skill-main` for `android-media-skill-1.2.0`.
 
+### Per-agent discovery paths
+
+| Agent | Project-local | User-global |
+|---|---|---|
+| Claude Code | `.claude/skills/<name>/SKILL.md` | `~/.claude/skills/<name>/SKILL.md` |
+| GitHub Copilot (CLI, VS Code, cloud) | `.github/skills/`, `.claude/skills/`, or `.agents/skills/` | `~/.copilot/skills/`, `~/.claude/skills/`, or `~/.agents/skills/` |
+| OpenCode | `.opencode/skills/`, `.claude/skills/`, or `.agents/skills/` | `~/.config/opencode/skills/`, `~/.claude/skills/`, or `~/.agents/skills/` |
+| Gemini CLI | `.gemini/skills/` or `.agents/skills/` | `~/.gemini/skills/` or `~/.agents/skills/` |
+| OpenAI Codex | `.agents/skills/` (community consensus) | — |
+| Cursor | `.cursor/skills/<name>/SKILL.md` | `~/.cursor/skills/<name>/SKILL.md` |
+
+Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [GitHub Copilot skills](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/add-skills), [OpenCode skills](https://opencode.ai/docs/skills/), [Gemini CLI skills](https://geminicli.com/docs/cli/skills/), [OpenAI Codex skills](https://developers.openai.com/codex/skills), [Cursor skills](https://cursor.com/docs/skills).
+
 ## Use
 
 Prompt your agent in natural language. It picks the matching skill by reading each `description` line.
 
 > Migrate this project from ExoPlayer 2.x to Media3 1.9.0.
-
-Works with Claude Code, Cursor, Cline, Continue, and any runner that reads `.skills/`.
 
 ## Skills
 
@@ -54,7 +87,7 @@ All skills pin to Media3 **1.9.0**. See [COMPATIBILITY.md](COMPATIBILITY.md) for
 
 ## Related
 
-Complements [android/skills](https://github.com/android/skills). Same format, same folder. Prefer the canonical `android/skills` when a skill exists in both.
+Complements [android/skills](https://github.com/android/skills). Same `SKILL.md` format. Prefer the canonical `android/skills` when a skill exists in both.
 
 ## Docs
 
