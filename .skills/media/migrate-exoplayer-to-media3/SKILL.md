@@ -1,6 +1,6 @@
 ---
 name: migrate-exoplayer-to-media3
-description: Use this skill to migrate an Android project from standalone ExoPlayer 2.x (com.google.android.exoplayer2.*) to AndroidX Media3 1.9.0 (androidx.media3.*). Use this skill to update Gradle dependencies, rewrite package imports, replace deprecated classes (SimpleExoPlayer, StyledPlayerView, PlayerNotificationManager, MediaSessionConnector), unify MediaSession with androidx.media3.session.MediaSession inside a MediaSessionService, rewire DataSource.Factory and DRM through DefaultDrmSessionManagerProvider, adopt the new CastPlayer setLocalPlayer pattern, switch media button preferences to setMediaButtonPreferences with standard Player commands, and fix HLS, DASH, SmoothStreaming, and RTSP MediaSource construction.
+description: Use this skill to migrate an Android project from standalone ExoPlayer 2.x (com.google.android.exoplayer2.*) to AndroidX Media3 1.10.0 (androidx.media3.*). Use this skill to update Gradle dependencies, rewrite package imports, replace deprecated classes (SimpleExoPlayer, StyledPlayerView, PlayerNotificationManager, MediaSessionConnector), unify MediaSession with androidx.media3.session.MediaSession inside a MediaSessionService, rewire DataSource.Factory and DRM through DefaultDrmSessionManagerProvider, adopt the new CastPlayer setLocalPlayer pattern, switch media button preferences to setMediaButtonPreferences with standard Player commands, and fix HLS, DASH, SmoothStreaming, and RTSP MediaSource construction.
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
@@ -28,7 +28,7 @@ metadata:
 - Project **MUST** use AGP 8.0 or later and Kotlin 1.9 or later.
 - Project **MUST NOT** depend on `androidx.media3.*` and `com.google.android.exoplayer2.*` at the same time after migration. Mixed dependencies cause `DuplicateClassException` at merge time.
 - If the project ships a public SDK or library with external consumers, **MUST** bump the major version because the package rename is a binary-incompatible change.
-- Target **Media3 1.9.0** or later.
+- Target **Media3 1.10.0** or later.
 
 ## Step 1: plan
 
@@ -47,7 +47,7 @@ metadata:
 
 ```toml
 [versions]
-media3 = "1.9.0"
+media3 = "1.10.0"
 
 [libraries]
 media3-exoplayer                = { module = "androidx.media3:media3-exoplayer",                version.ref = "media3" }
@@ -130,7 +130,7 @@ val mediaSession = MediaSessionCompat(context, "tag")
 val connector = MediaSessionConnector(mediaSession).apply { setPlayer(player) }
 ```
 
-## Step 6: use setMediaButtonPreferences (Media3 1.9.0)
+## Step 6: use setMediaButtonPreferences (Media3 1.10.0)
 
 ### RIGHT
 
@@ -191,7 +191,7 @@ val drmSessionManager = DefaultDrmSessionManager.Builder().build(httpMediaDrmCal
 val factory = HlsMediaSource.Factory(dataSourceFactory).setDrmSessionManager(drmSessionManager)
 ```
 
-## Step 8: adopt the rewritten CastPlayer (Media3 1.9.0)
+## Step 8: adopt the rewritten CastPlayer (Media3 1.10.0)
 
 ### RIGHT
 
@@ -214,7 +214,7 @@ val session = MediaSession.Builder(context, castPlayer).build()
 
 Use `@OptIn(UnstableApi::class)` only at the narrowest scope. **DO NOT** add a global `-opt-in=androidx.media3.common.util.UnstableApi` compiler flag.
 
-## Step 10: adopt simplified ExoPlayer APIs (Media3 1.9.0)
+## Step 10: adopt simplified ExoPlayer APIs (Media3 1.10.0)
 
 - **Mute and unmute:** use `player.mute()` and `player.unmute()` instead of caching the previous volume manually.
 - **Stuck player detection:** listen for `StuckPlayerException` in `Player.Listener.onPlayerError` and surface it in analytics.
@@ -244,6 +244,6 @@ grep -R "com.google.android.exoplayer2" app/src || echo "clean"
 - **Foreground service type.** On API 34+, the service **MUST** declare `android:foregroundServiceType="mediaPlayback"` and hold `FOREGROUND_SERVICE_MEDIA_PLAYBACK`.
 - **Mixed dependencies.** A single transitive dependency on `exoplayer2` triggers `DuplicateClassException`.
 - **UnstableApi sprinkled everywhere.** If the migration ends with hundreds of `@OptIn` annotations, the code is probably calling `androidx.media3.exoplayer.*` internals where `androidx.media3.common.*` would be stable.
-- **Manual wake locks.** Remove any manual wake lock code. Media3 1.9.0 holds them by default.
+- **Manual wake locks.** Remove any manual wake lock code. Media3 1.10.0 holds them by default.
 - **CastPlayer double instancing.** Use `CastPlayer.Builder(context).setLocalPlayer(exoPlayer)`.
 - **Manual volume caching for mute.** Replace with `player.mute()` / `player.unmute()`.
