@@ -2,9 +2,11 @@
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![CI](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml)
-[![Media3](https://img.shields.io/badge/Media3-1.9.0-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
+[![Media3](https://img.shields.io/badge/Media3-1.10.0-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
-Android skills for AI coding agents to build with **AndroidX Media3 1.9.0**. Drop them into your project and prompt your agent. 18 skills covering migration, playback, DRM, streaming, ads, and analytics. Published by **Shunnek Labs**.
+Android skills for AI coding agents to build with **AndroidX Media3 1.10.0**. Drop them into your project and prompt your agent. 18 skills covering migration, playback, DRM, streaming, ads, and analytics. Published by **Shunnek Labs**.
+
+> **Note on v1.2.2.** The pack's Media3 pin was bumped from 1.9.0 to 1.10.0 as a frontmatter-only compatibility update. Skill bodies (RIGHT and WRONG code pairs) were last audited against Media3 1.9.0 on 2026-04-16. A full audit against 1.10.0 will ship in v1.3.0.
 
 ## Install
 
@@ -57,7 +59,7 @@ Key skills:
 - `media3-drm-widevine-setup` for Widevine
 - `media3-compose-ui-material3` for Compose player UI
 
-Pin Media3 to 1.9.0.
+Pin Media3 to 1.10.0.
 EOF
 ```
 
@@ -74,7 +76,7 @@ your-android-project/
 └── build.gradle.kts
 ```
 
-Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.0` and `android-media-pack-main` for `android-media-pack-1.2.0`.
+Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.2` and `android-media-pack-main` for `android-media-pack-1.2.2`.
 
 ### Per-agent discovery paths
 
@@ -94,7 +96,7 @@ Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [GitHub C
 
 Prompt your agent in natural language. It picks the matching skill by reading each `description` line.
 
-> Migrate this project from ExoPlayer 2.x to Media3 1.9.0.
+> Migrate this project from ExoPlayer 2.x to Media3 1.10.0.
 
 ## Skills
 
@@ -109,7 +111,7 @@ Prompt your agent in natural language. It picks the matching skill by reading ea
 | **Ads & analytics** | [`media3-ads-ima`](.skills/media/media3-ads-ima/SKILL.md) · [`media3-analytics-telemetry`](.skills/media/media3-analytics-telemetry/SKILL.md) |
 | **Off-player** | [`media3-inspector-metadata-thumbnails`](.skills/media/media3-inspector-metadata-thumbnails/SKILL.md) |
 
-All skills pin to Media3 **1.9.0**. See [COMPATIBILITY.md](COMPATIBILITY.md) for the toolchain matrix.
+All skills pin to Media3 **1.10.0**. See [COMPATIBILITY.md](COMPATIBILITY.md) for the toolchain matrix.
 
 ## Related
 
