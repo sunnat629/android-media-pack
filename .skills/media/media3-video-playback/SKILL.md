@@ -5,8 +5,8 @@ license: Apache-2.0
 metadata:
   author: Shunnek Labs
   version: "1.0"
-  target_media3_version: "1.9.0"
-  last_reviewed: "2026-04-16"
+  target_media3_version: "1.10.0"
+  last_reviewed: "2026-04-17"
   keywords:
     - android
     - media3

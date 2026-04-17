@@ -4,11 +4,27 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ## [Unreleased]
 
-### Fixed
-- **README install paths.** Replaced the unsupported `.skills/` target with `.agents/skills/` as the cross-agent default, and added a per-agent discovery matrix covering Claude Code, GitHub Copilot (CLI, VS Code, cloud), OpenCode, Gemini CLI, OpenAI Codex, and Cursor. A bare `.skills/` at the repo root is not scanned by any supported agent. (#77)
+## [1.2.2] - 2026-04-17
 
 ### Changed
+- **Bumped Media3 pin from 1.9.0 to 1.10.0** on every skill frontmatter (`metadata.target_media3_version`) and refreshed `metadata.last_reviewed` to 2026-04-17.
+- README, COMPATIBILITY, REFERENCES updated to reference Media3 1.10.0 (released 27 March 2026).
+- README includes a prominent note that bodies were last audited at 1.9.0.
+- COMPATIBILITY documents a new bypass policy section covering this kind of frontmatter-only release.
+
+### Audit bypass (logged per COMPATIBILITY.md bypass policy)
+- **Scope of bypass:** Phase 5 (Dry run) and Phase 6 (Review) were skipped for every shipped skill.
+- **Rationale:** fast compatibility signal so consumers do not pin to an out-of-date Media3.
+- **What is NOT guaranteed in v1.2.2:** skill bodies (RIGHT and WRONG code pairs, Common pitfalls, step procedures) have not been re-verified against Media3 1.10.0. They remain accurate as of Media3 1.9.0 on 2026-04-16.
+- **Follow-up:** a full Media3 1.10.0 audit is tracked as a Feature Issue targeting v1.3.0. Every shipped skill gets Phases 1 through 6 run fresh.
+
+### Fixed (carried over from the closed [Unreleased] window)
+- **README install paths.** Replaced the unsupported `.skills/` target with `.agents/skills/` as the cross-agent default, and added a per-agent discovery matrix covering Claude Code, GitHub Copilot (CLI, VS Code, cloud), OpenCode, Gemini CLI, OpenAI Codex, Cursor, and Junie. A bare `.skills/` at the repo root is not scanned by any supported agent. (#77, #79)
+- **Junie missing from install matrix.** Added a dedicated Junie install section using the `.junie/guidelines.md` single-file model, plus a Junie row in the per-agent paths table. (#79)
+
+### Changed (carried over)
 - Completed the `android-media-skill` to `android-media-pack` rename across `CONTRIBUTING.md`, `SECURITY.md`, `CHANGELOG.md` compare and release footnote URLs, and `.github/workflows/release-v1.2.1.yml` tag message.
+- README title, CI badge, install `curl` URLs, Discussions, and Issues links now use the `android-media-pack` slug so install commands actually resolve.
 
 ## [1.2.1] - 2026-04-17
 
@@ -70,7 +86,8 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 ### Meta
 - Initial repository scaffold: SKILL anatomy, issue types, label taxonomy.
 
-[Unreleased]: https://github.com/sunnat629/android-media-pack/compare/v1.2.1...HEAD
+[Unreleased]: https://github.com/sunnat629/android-media-pack/compare/v1.2.2...HEAD
+[1.2.2]: https://github.com/sunnat629/android-media-pack/compare/v1.2.1...v1.2.2
 [1.2.1]: https://github.com/sunnat629/android-media-pack/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/sunnat629/android-media-pack/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/sunnat629/android-media-pack/compare/v1.0.0...v1.1.0
