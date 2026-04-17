@@ -12,7 +12,7 @@ assignees: []
 
 ## Media3 version
 
-<!-- e.g. 1.9.0 -->
+<!-- e.g. 1.10.0 (see /VERSION in the repo root for the canonical pin) -->
 
 ## What is wrong
 

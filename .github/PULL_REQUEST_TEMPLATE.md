@@ -28,7 +28,7 @@ Closes #
 ## Review notes
 
 - **Peer reviewer:** <!-- @handle -->
-- **Media3 version verified against:** <!-- e.g. 1.9.0 -->
+- **Media3 version verified against:** <!-- e.g. 1.10.0 (see /VERSION) -->
 - **Test devices / API levels covered:** <!-- e.g. API 28, 33, 34, 35 -->
 
 ## References cited
