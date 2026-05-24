@@ -1,6 +1,6 @@
 # android-media-pack
 
-Current versions: **android-media-pack v1.5.0** · **Media3 1.10.1**
+Current versions: **android-media-pack v2.0.0** · **Media3 1.10.1**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Media3](https://img.shields.io/badge/Media3-1.10.1-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
@@ -11,18 +11,20 @@ Use this pack when you want an agent to change real media code without guessing 
 
 ## What You Get
 
-19 focused skills for the work media apps usually need:
+31 focused skills for the work media apps usually need:
 
 | Area | Use it for |
 |---|---|
 | Architecture | KMP boundaries, player ownership, feeds, preload windows, offline-first data, telemetry contracts |
 | Migration | ExoPlayer 2.x to Media3, XML `PlayerView` to Compose UI |
 | Playback | video, audio, VOD, background playback, lifecycle state |
-| Streaming | HLS, DASH, live, live-only streams, buffer policy |
+| Streaming and protocols | HLS, DASH, SmoothStreaming, RTSP, MIDI, live, live-only streams, buffer policy |
 | Delivery | DataSource, HTTP stacks, cache, bandwidth, ABR, Cast |
+| UI and devices | Compose, Views, adaptive layouts, phones, tablets, foldables, TV, Auto, XR |
 | Protection | Widevine, license headers, offline licenses, HDCP and L1/L3 behavior |
 | Ads and analytics | IMA CSAI/SSAI, ad UI, QoE telemetry, TTFF, rebuffer, dropped frames |
 | Inspection | metadata, thumbnails, frame extraction, container checks |
+| Processing and tests | Transformer, effects, Lottie, muxer, test utilities, Robolectric |
 
 All skills are short, current, and task-shaped. They tell the agent what to inspect, what to avoid, and which Media3 APIs belong in Android source sets instead of `commonMain`.
 
@@ -34,6 +36,7 @@ Without this pack, an agent often burns context on broad search and mixed-era ex
 |---|---|---|
 | Migrate ExoPlayer | Agent may mix `com.google.android.exoplayer2.*` with `androidx.media3.*` and chase old migration snippets. | `migrate-exoplayer-to-media3` gives the package boundary and current Media3 target first. |
 | Build Compose player UI | Agent may wrap old `PlayerView` in `AndroidView` by default. | `media3-compose-ui-material3` points at Media3 Compose UI, `ContentFrame`, player controls, and lifecycle-safe state. |
+| Make UI responsive | Agent may stretch a phone player across tablets, foldables, TV, Auto, or XR. | Adaptive and device skills split mobile/tablet/foldable UI from TV, Auto, and XR constraints. |
 | Build reels or short-feed playback | Agent may create a player per row or preload too much. | `streaming-media-architecture` sets one owner, a bounded window, thumbnail handoff rules, and telemetry gates. |
 | Add HLS/DASH playback | Agent may treat live and VOD the same. | Streaming skills split HLS/DASH, live, live-only, VOD, ABR, and manifest failure handling. |
 | Add DRM or ads | Agent may hide errors behind generic playback failures. | Protection and ads skills keep license/ad errors separate from content errors and telemetry. |
@@ -130,19 +133,31 @@ The agent should load the matching skill and use it as task context.
 | [`media3-background-playback-service`](.skills/media/background/media3-background-playback-service/SKILL.md) | MediaSessionService, notification, media buttons |
 | [`media3-lifecycle-state`](.skills/media/background/media3-lifecycle-state/SKILL.md) | MediaController lifecycle, saved state, process death |
 | [`media3-compose-ui-material3`](.skills/media/ui/media3-compose-ui-material3/SKILL.md) | Media3 Compose UI and Material3 controls |
+| [`media3-adaptive-compose-ui`](.skills/media/ui/media3-adaptive-compose-ui/SKILL.md) | Responsive Compose UI across phones, tablets, foldables, and large screens |
+| [`media3-view-ui-player`](.skills/media/ui/media3-view-ui-player/SKILL.md) | Android Views `PlayerView`, XML UI, and Compose interop |
+| [`media3-tv-leanback-ui`](.skills/media/ui/media3-tv-leanback-ui/SKILL.md) | Android TV Leanback UI, D-pad focus, overscan-safe controls |
+| [`media3-android-auto-media-surface`](.skills/media/ui/media3-android-auto-media-surface/SKILL.md) | Android Auto media sessions, browse trees, transport controls |
+| [`media3-xr-media-surface`](.skills/media/ui/media3-xr-media-surface/SKILL.md) | Android XR media surface planning, immersive UI, current-doc checks |
 | [`media3-video-playback`](.skills/media/playback/media3-video-playback/SKILL.md) | Surfaces, aspect ratio, first frame, HDR, PiP |
 | [`media3-audio-playback`](.skills/media/playback/media3-audio-playback/SKILL.md) | Audio focus, attributes, becoming-noisy, session controls |
 | [`media3-vod-playback`](.skills/media/playback/media3-vod-playback/SKILL.md) | Resume, playlists, chapters, thumbnails |
+| [`media3-rtsp-playback`](.skills/media/playback/media3-rtsp-playback/SKILL.md) | RTSP camera feeds, LAN streams, reconnect, credential-safe errors |
+| [`media3-smoothstreaming-playback`](.skills/media/playback/media3-smoothstreaming-playback/SKILL.md) | SmoothStreaming manifests and adaptive playback caveats |
+| [`media3-midi-playback`](.skills/media/playback/media3-midi-playback/SKILL.md) | MIDI playback dependency checks and generated-audio caveats |
 | [`media3-hls-dash-adaptive-streaming`](.skills/media/streaming/media3-hls-dash-adaptive-streaming/SKILL.md) | Adaptive streaming, manifests, subtitles, buffering |
 | [`media3-live-streaming`](.skills/media/streaming/media3-live-streaming/SKILL.md) | Live offset, DVR, catch-up, reconnect |
 | [`media3-live-only-streaming`](.skills/media/streaming/media3-live-only-streaming/SKILL.md) | Non-DVR streams with no seeking or resume |
 | [`media3-datasources-networking`](.skills/media/delivery/media3-datasources-networking/SKILL.md) | HTTP, cache, headers, auth, custom DataSource |
 | [`media3-bandwidth-abr`](.skills/media/delivery/media3-bandwidth-abr/SKILL.md) | Bandwidth, ABR limits, load control |
 | [`media3-cast-integration`](.skills/media/delivery/media3-cast-integration/SKILL.md) | CastPlayer and local-to-remote handoff |
+| [`media3-workmanager-offline-ops`](.skills/media/background/media3-workmanager-offline-ops/SKILL.md) | WorkManager-backed offline operations, constraints, retries, cleanup |
 | [`media3-drm-widevine-setup`](.skills/media/protection/media3-drm-widevine-setup/SKILL.md) | Widevine, licenses, HDCP, L1/L3 |
 | [`media3-ads-ima`](.skills/media/ads-analytics/media3-ads-ima/SKILL.md) | IMA CSAI/SSAI ads and companion UI |
 | [`media3-analytics-telemetry`](.skills/media/ads-analytics/media3-analytics-telemetry/SKILL.md) | QoE, TTFF, rebuffer, dropped frames, player errors |
 | [`media3-inspector-metadata-thumbnails`](.skills/media/inspector/media3-inspector-metadata-thumbnails/SKILL.md) | Metadata, thumbnails, frame/container inspection |
+| [`media3-transformer-editing`](.skills/media/processing/media3-transformer-editing/SKILL.md) | Transformer trim, transcode, export jobs, progress, cancellation |
+| [`media3-video-effects-lottie-muxer`](.skills/media/processing/media3-video-effects-lottie-muxer/SKILL.md) | Video effects, Lottie overlays, muxing, export boundaries |
+| [`media3-test-utils-robolectric`](.skills/media/testing/media3-test-utils-robolectric/SKILL.md) | Media3 test utilities, Robolectric patterns, fake playback state |
 
 ## Sample App
 
