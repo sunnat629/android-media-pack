@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Enforce the SKILL.md body size budget.
 #
-# - Soft target: 10,000 to 18,000 characters.
+# - Soft target: 700 to 6,000 characters for compact skills.
 # - Hard ceiling: 20,000 characters.
 #
 # The body is everything after the closing --- of the YAML frontmatter.
@@ -11,8 +11,8 @@
 set -euo pipefail
 
 max=20000
-min_target=10000
-max_target=18000
+min_target=700
+max_target=6000
 
 fail=0
 shopt -s nullglob

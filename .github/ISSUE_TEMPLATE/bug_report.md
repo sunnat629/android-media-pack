@@ -12,7 +12,7 @@ assignees: []
 
 ## Media3 version
 
-<!-- e.g. 1.9.0 -->
+<!-- e.g. 1.10.1 -->
 
 ## What is wrong
 

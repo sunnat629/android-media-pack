@@ -6,11 +6,12 @@ Curated list of trusted sources consulted when authoring and auditing skills in 
 
 | Pack version | Media3 | Tier shipped |
 |---|---|---|
+| Unreleased | 1.10.1 | Compact 19-skill refresh plus architecture |
 | 1.0.0 | 1.9.0 | Tier 1 (4 skills) |
 | 1.1.0 | 1.9.0 | Tier 2 (3 skills) |
 | 1.2.0 | 1.9.0 | Tier 3 (11 skills) |
 
-All shipped skills target **Media3 1.9.0** (released 19 December 2025). For upstream Media3 release history, see the [Media3 release notes](https://developer.android.com/jetpack/androidx/releases/media3).
+Current main skills target **Media3 1.10.1**. For upstream Media3 release history, see the [Media3 release notes](https://developer.android.com/jetpack/androidx/releases/media3).
 
 ## Official sources (canonical)
 
@@ -58,7 +59,7 @@ These are production or production-adjacent projects that are safe to consult fo
   https://github.com/anilbeesetti/nextplayer
 - **maxrave-dev/SimpMusic** — YouTube Music client built on Media3 `MediaSessionService`. Background audio, lock-screen transport, playlists, notification handling in Compose.
   https://github.com/maxrave-dev/SimpMusic
-- **CarGuo/GSYVideoPlayer** — Long-running Chinese-community Android video player. Custom renderer trees, gesture overlays, floating window playback. Legacy ExoPlayer patterns live here, cross-check against Media3 1.9.0.
+- **CarGuo/GSYVideoPlayer** — Long-running Chinese-community Android video player. Custom renderer trees, gesture overlays, floating window playback. Legacy ExoPlayer patterns live here, cross-check against current Media3 APIs.
   https://github.com/CarGuo/GSYVideoPlayer
 - **Doikki/DKVideoPlayer** — Lightweight Android video player with a customizable controller. Compact player UI decomposition.
   https://github.com/Doikki/DKVideoPlayer

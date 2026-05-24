@@ -4,7 +4,14 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ## [Unreleased]
 
+### Added
+- `streaming-media-architecture` v1.1 (Media3 1.10.1) for top-level Android/KMP streaming architecture and reels/feed playback decisions.
+- `bin/android-media-skill` CLI with `install`, `update`, `list`, and `doctor` commands.
+- `scripts/install-media-skills.sh` for external installs from a repository link into a local project's `.skills/media` folder.
+
 ### Changed
+- Refreshed all main skills from the newer compact skill set and bumped `metadata.target_media3_version` to Media3 1.10.1.
+- Bumped the sample app Media3 version catalog entry to 1.10.1.
 - **Renamed repository** from `shunnek-media-pack` to `android-media-skill`. Pack author remains **Shunnek Labs**.
 - README simplified: flat install layout, domain-grouped skill table, removed Tier headings and duplicate task map.
 - Removed `RELEASES.md`. Media3 version matrix lives in `REFERENCES.md`.

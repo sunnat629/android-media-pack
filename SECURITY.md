@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-The pack is aligned with **AndroidX Media3 1.9.0** and receives fixes on the current release series only. Older major versions of the pack will receive critical security fixes on a best-effort basis.
+The pack is aligned with **AndroidX Media3 1.10.1** and receives fixes on the current release series only. Older major versions of the pack will receive critical security fixes on a best-effort basis.
 
 | Pack version | Media3 pin | Supported |
 |---|---|---|
