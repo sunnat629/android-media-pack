@@ -10,6 +10,7 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 - `scripts/install-media-skills.sh` for external installs from a repository link into a local project's `.skills/media` folder.
 
 ### Changed
+- Rewrote README for readability with clearer skill descriptions, install paths, and with-vs-without-skill examples.
 - Refreshed all main skills from the newer compact skill set and bumped `metadata.target_media3_version` to Media3 1.10.1.
 - Bumped the sample app Media3 version catalog entry to 1.10.1.
 - **Renamed repository** from `shunnek-media-pack` to `android-media-skill`. Pack author remains **Shunnek Labs**.
