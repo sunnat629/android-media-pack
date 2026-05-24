@@ -1,5 +1,7 @@
 # android-media-pack
 
+Current versions: **android-media-pack v1.5.0** · **Media3 1.10.1**
+
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Media3](https://img.shields.io/badge/Media3-1.10.1-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
