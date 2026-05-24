@@ -91,6 +91,31 @@ private val skillItems = listOf(
         summary = "ContentFrame, PlayerSurface, controls, lifecycle-safe state, and Material3.",
     ),
     SkillItem(
+        name = "media3-adaptive-compose-ui",
+        domain = "UI",
+        summary = "Responsive player UI across phones, tablets, foldables, large screens, orientation, and insets.",
+    ),
+    SkillItem(
+        name = "media3-view-ui-player",
+        domain = "UI",
+        summary = "View-based PlayerView, XML player UI, lifecycle attach/release, and Compose interop.",
+    ),
+    SkillItem(
+        name = "media3-tv-leanback-ui",
+        domain = "Device",
+        summary = "Android TV Leanback playback UI, D-pad focus, overscan-safe controls, and transport keys.",
+    ),
+    SkillItem(
+        name = "media3-android-auto-media-surface",
+        domain = "Device",
+        summary = "Android Auto media sessions, browse trees, transport controls, and car UX restrictions.",
+    ),
+    SkillItem(
+        name = "media3-xr-media-surface",
+        domain = "Device",
+        summary = "Android XR media surface planning, immersive playback, controller input, and fallback paths.",
+    ),
+    SkillItem(
         name = "media3-video-playback",
         domain = "UI",
         summary = "Video surfaces, aspect ratio, first frame, HDR, PiP, and feed-safe handoff.",
@@ -121,6 +146,21 @@ private val skillItems = listOf(
         summary = "Audio attributes, audio focus, becoming-noisy, chapters, metadata, and session controls.",
     ),
     SkillItem(
+        name = "media3-rtsp-playback",
+        domain = "Protocols",
+        summary = "RTSP camera feeds, LAN streams, buffering, reconnect policy, and credential-safe errors.",
+    ),
+    SkillItem(
+        name = "media3-smoothstreaming-playback",
+        domain = "Protocols",
+        summary = "SmoothStreaming manifests, adaptive playback, fallbacks, and manifest error handling.",
+    ),
+    SkillItem(
+        name = "media3-midi-playback",
+        domain = "Protocols",
+        summary = "MIDI playback dependency checks, runtime caveats, and generated-audio behavior.",
+    ),
+    SkillItem(
         name = "media3-datasources-networking",
         domain = "Delivery",
         summary = "HTTP DataSource, OkHttp/Cronet/HttpEngine, cache, headers, auth, and custom DataSource decisions.",
@@ -134,6 +174,11 @@ private val skillItems = listOf(
         name = "media3-cast-integration",
         domain = "Delivery",
         summary = "CastPlayer, local-to-remote handoff, MediaRouteButton, and Cast session lifecycle.",
+    ),
+    SkillItem(
+        name = "media3-workmanager-offline-ops",
+        domain = "Core",
+        summary = "WorkManager-backed offline operations, download constraints, retries, cleanup, and foreground handoff.",
     ),
     SkillItem(
         name = "media3-drm-widevine-setup",
@@ -154,6 +199,21 @@ private val skillItems = listOf(
         name = "media3-inspector-metadata-thumbnails",
         domain = "Off-player",
         summary = "Inspector metadata, thumbnail/frame extraction, and container sample inspection without playback.",
+    ),
+    SkillItem(
+        name = "media3-transformer-editing",
+        domain = "Processing",
+        summary = "Transformer editing and export jobs: trim, transcode, progress, cancellation, and cleanup.",
+    ),
+    SkillItem(
+        name = "media3-video-effects-lottie-muxer",
+        domain = "Processing",
+        summary = "Video effects, Lottie overlays, muxing, export boundaries, and processing failures.",
+    ),
+    SkillItem(
+        name = "media3-test-utils-robolectric",
+        domain = "Testing",
+        summary = "Media3 test utilities, Robolectric patterns, fake playback state, and realistic assertions.",
     ),
 )
 
@@ -249,7 +309,7 @@ private fun Hero(player: Player?) {
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "A focused home for Android and KMP media work: architecture, playback, streaming, DRM, ads, telemetry, and migration.",
+                text = "A focused home for Android and KMP media work: architecture, playback, streaming, adaptive UI, device surfaces, DRM, ads, telemetry, editing, and tests.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -382,9 +442,13 @@ private fun DomainDot(domain: String) {
         "Core" -> MaterialTheme.colorScheme.tertiary
         "UI" -> Color(0xFF9C4146)
         "Streaming" -> Color(0xFF006D3A)
+        "Protocols" -> Color(0xFF0057A8)
         "Delivery" -> Color(0xFF805600)
+        "Device" -> Color(0xFF345A00)
         "Protection" -> Color(0xFF5C4B8A)
         "Ads & analytics" -> Color(0xFF8B4A00)
+        "Processing" -> Color(0xFF9A3412)
+        "Testing" -> Color(0xFF5B5F00)
         else -> MaterialTheme.colorScheme.outline
     }
 

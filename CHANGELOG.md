@@ -4,6 +4,27 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-05-24
+
+### Added
+- `media3-rtsp-playback` for RTSP camera feeds, LAN streams, and credential-safe failure handling.
+- `media3-smoothstreaming-playback` for SmoothStreaming manifests and adaptive playback caveats.
+- `media3-midi-playback` for MIDI playback dependency checks and generated-audio caveats.
+- `media3-view-ui-player` for Media3 View-based `PlayerView`, XML UI, and Compose interop.
+- `media3-tv-leanback-ui` for Android TV Leanback UI, D-pad focus, and overscan-safe controls.
+- `media3-android-auto-media-surface` for Android Auto media sessions, browse trees, and transport controls.
+- `media3-xr-media-surface` for Android XR media playback planning with current-doc verification.
+- `media3-adaptive-compose-ui` for responsive Compose player UI across phones, tablets, foldables, and large screens.
+- `media3-workmanager-offline-ops` for WorkManager-backed offline media operations.
+- `media3-transformer-editing` for trim, transcode, export jobs, progress, and cancellation.
+- `media3-video-effects-lottie-muxer` for video effects, Lottie overlays, muxing, and export boundaries.
+- `media3-test-utils-robolectric` for Media3 test utilities, Robolectric patterns, and fake playback state.
+
+### Changed
+- Expanded the pack from 19 to 31 skills.
+- Updated README skill map, examples, and current version line for v2.0.0.
+- Updated `sampleApp` skill list and domain summary for the new protocol, device, processing, and testing skills.
+
 ## [1.5.0] - 2026-05-24
 
 ### Added
@@ -62,7 +83,8 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 ### Meta
 - Initial repository scaffold: SKILL anatomy, issue types, label taxonomy.
 
-[Unreleased]: https://github.com/sunnat629/android-media-pack/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/sunnat629/android-media-pack/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/sunnat629/android-media-pack/compare/v1.5.0...v2.0.0
 [1.5.0]: https://github.com/sunnat629/android-media-pack/compare/v1.2.0...v1.5.0
 [1.2.0]: https://github.com/sunnat629/android-media-pack/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/sunnat629/android-media-pack/compare/v1.0.0...v1.1.0
