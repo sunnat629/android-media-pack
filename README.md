@@ -1,108 +1,78 @@
-# android-media-pack
+# android-media-skill
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![CI](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml)
-[![Media3](https://img.shields.io/badge/Media3-1.10.0-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
+[![CI](https://github.com/sunnat629/android-media-skill/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/android-media-skill/actions/workflows/ci.yml)
+[![Media3](https://img.shields.io/badge/Media3-1.10.1-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
-Android skills for AI coding agents to build with **AndroidX Media3 1.10.0**. Drop them into your project and prompt your agent. 18 skills covering migration, playback, DRM, streaming, ads, and analytics. Published by **Shunnek Labs**.
-
-> **Note on v1.2.2.** The pack's Media3 pin was bumped from 1.9.0 to 1.10.0 as a frontmatter-only compatibility update. Skill bodies (RIGHT and WRONG code pairs) were last audited against Media3 1.9.0 on 2026-04-16. A full audit against 1.10.0 will ship in v1.3.0.
+Android skills for AI coding agents to build with **AndroidX Media3 1.10.1**. Drop them into your project and prompt your agent. 19 skills covering architecture, migration, playback, DRM, streaming, ads, and analytics. Published by **Shunnek Labs**.
 
 ## Install
 
-Agents do not scan a bare `.skills/` directory. Each agent reads from its own namespaced folder. The recommended cross-agent target is `.agents/skills/`, which is recognized by GitHub Copilot, OpenCode, Gemini CLI, and OpenAI Codex. Claude Code, Cursor, and Junie read from their own locations (see matrix below).
+With the CLI:
 
-### Recommended (cross-agent, works with Copilot, OpenCode, Gemini CLI, Codex)
+```bash
+curl -fsSL https://raw.githubusercontent.com/sunnat629/android-media-skill/main/bin/android-media-skill \
+  -o android-media-skill
+chmod +x android-media-skill
+./android-media-skill install /path/to/your-android-project
+```
+
+CLI commands:
+
+```bash
+./android-media-skill install /path/to/project
+./android-media-skill update /path/to/project
+./android-media-skill list /path/to/project
+./android-media-skill doctor /path/to/project
+```
+
+With a repo link:
 
 ```bash
 cd your-android-project
-mkdir -p .agents/skills
-curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .agents/skills android-media-pack-main/.skills/media
+curl -fsSL https://raw.githubusercontent.com/sunnat629/android-media-skill/main/scripts/install-media-skills.sh \
+  | bash -s -- . https://github.com/sunnat629/android-media-skill main
 ```
 
-### Claude Code
+From a tarball:
 
 ```bash
 cd your-android-project
-mkdir -p .claude/skills
-curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .claude/skills android-media-pack-main/.skills/media
+rm -rf .skills/media
+mkdir -p .skills/media
+curl -sL https://github.com/sunnat629/android-media-skill/archive/refs/heads/main.tar.gz \
+  | tar -xz --strip-components=3 -C .skills/media android-media-skill-main/.skills/media
 ```
 
-### Cursor
+All install commands replace only `.skills/media`.
 
-```bash
-cd your-android-project
-mkdir -p .cursor/skills
-curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .cursor/skills android-media-pack-main/.skills/media
-```
-
-### Junie (JetBrains AI Assistant)
-
-Junie does not auto-discover a folder of skills. It reads a single file, `.junie/guidelines.md`. Install the pack under `.junie/skills/` to keep everything Junie-related in one place, then reference it from `guidelines.md`.
-
-```bash
-cd your-android-project
-mkdir -p .junie/skills
-curl -sL https://github.com/sunnat629/android-media-pack/archive/refs/heads/main.tar.gz \
-  | tar -xz --strip-components=3 -C .junie/skills android-media-pack-main/.skills/media
-cat >> .junie/guidelines.md <<'EOF'
-## Media playback
-When asked to migrate or change Media3 code, follow the matching skill under
-`.junie/skills/<skill-name>/SKILL.md`.
-
-Key skills:
-- `migrate-exoplayer-to-media3` for ExoPlayer 2.x migrations
-- `media3-background-playback-service` for background audio
-- `media3-drm-widevine-setup` for Widevine
-- `media3-compose-ui-material3` for Compose player UI
-
-Pin Media3 to 1.10.0.
-EOF
-```
-
-Result (Junie target shown):
+Result:
 
 ```text
 your-android-project/
-├── .junie/
-│   ├── guidelines.md
-│   └── skills/
-│       ├── migrate-exoplayer-to-media3/SKILL.md
-│       ├── media3-background-playback-service/SKILL.md
-│       └── ...
+├── .skills/media/
+│   ├── migrate-exoplayer-to-media3/SKILL.md
+│   ├── media3-background-playback-service/SKILL.md
+│   └── ...
 ├── app/
 └── build.gradle.kts
 ```
 
-Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.2` and `android-media-pack-main` for `android-media-pack-1.2.2`.
-
-### Per-agent discovery paths
-
-| Agent | Project-local | User-global |
-|---|---|---|
-| Claude Code | `.claude/skills/<name>/SKILL.md` | `~/.claude/skills/<name>/SKILL.md` |
-| GitHub Copilot (CLI, VS Code, cloud) | `.github/skills/`, `.claude/skills/`, or `.agents/skills/` | `~/.copilot/skills/`, `~/.claude/skills/`, or `~/.agents/skills/` |
-| OpenCode | `.opencode/skills/`, `.claude/skills/`, or `.agents/skills/` | `~/.config/opencode/skills/`, `~/.claude/skills/`, or `~/.agents/skills/` |
-| Gemini CLI | `.gemini/skills/` or `.agents/skills/` | `~/.gemini/skills/` or `~/.agents/skills/` |
-| OpenAI Codex | `.agents/skills/` (community consensus) | — |
-| Cursor | `.cursor/skills/<name>/SKILL.md` | `~/.cursor/skills/<name>/SKILL.md` |
-| Junie (JetBrains AI Assistant) | `.junie/guidelines.md` + `.junie/skills/<name>/SKILL.md` (referenced from guidelines) | — |
-
-Sources: [Claude Code skills](https://code.claude.com/docs/en/skills), [GitHub Copilot skills](https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/add-skills), [OpenCode skills](https://opencode.ai/docs/skills/), [Gemini CLI skills](https://geminicli.com/docs/cli/skills/), [OpenAI Codex skills](https://developers.openai.com/codex/skills), [Cursor skills](https://cursor.com/docs/skills), [Junie guidelines](https://www.jetbrains.com/help/junie/customize-guidelines.html).
+Re-run the command to update. For reproducible installs, swap `refs/heads/main` for a tagged release such as `refs/tags/v1.2.0` and `android-media-skill-main` for `android-media-skill-1.2.0`.
 
 ## Use
 
 Prompt your agent in natural language. It picks the matching skill by reading each `description` line.
 
-> Migrate this project from ExoPlayer 2.x to Media3 1.10.0.
+> Migrate this project from ExoPlayer 2.x to Media3 1.10.1.
+
+Works with Claude Code, Cursor, Cline, Continue, and any runner that reads `.skills/`.
 
 ## Skills
 
 | Domain | Skill |
 |---|---|
+| **Architecture** | [`streaming-media-architecture`](.skills/media/streaming-media-architecture/SKILL.md) |
 | **Migration** | [`migrate-exoplayer-to-media3`](.skills/media/migrate-exoplayer-to-media3/SKILL.md) · [`migrate-xml-ui-to-compose`](.skills/media/migrate-xml-ui-to-compose/SKILL.md) |
 | **Core** | [`media3-background-playback-service`](.skills/media/media3-background-playback-service/SKILL.md) · [`media3-lifecycle-state`](.skills/media/media3-lifecycle-state/SKILL.md) |
 | **UI** | [`media3-compose-ui-material3`](.skills/media/media3-compose-ui-material3/SKILL.md) · [`media3-video-playback`](.skills/media/media3-video-playback/SKILL.md) |
@@ -112,17 +82,17 @@ Prompt your agent in natural language. It picks the matching skill by reading ea
 | **Ads & analytics** | [`media3-ads-ima`](.skills/media/media3-ads-ima/SKILL.md) · [`media3-analytics-telemetry`](.skills/media/media3-analytics-telemetry/SKILL.md) |
 | **Off-player** | [`media3-inspector-metadata-thumbnails`](.skills/media/media3-inspector-metadata-thumbnails/SKILL.md) |
 
-All skills pin to Media3 **1.10.0**. See [COMPATIBILITY.md](COMPATIBILITY.md) for the toolchain matrix.
+All skills pin to Media3 **1.10.1**. See [COMPATIBILITY.md](COMPATIBILITY.md) for the toolchain matrix.
 
 ## Related
 
-Complements [android/skills](https://github.com/android/skills). Same `SKILL.md` format. Prefer the canonical `android/skills` when a skill exists in both.
+Complements [android/skills](https://github.com/android/skills). Same format, same folder. Prefer the canonical `android/skills` when a skill exists in both.
 
 ## Docs
 
 [Changelog](CHANGELOG.md) · [Compatibility](COMPATIBILITY.md) · [Contributing](CONTRIBUTING.md) · [References](REFERENCES.md) · [Security](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
-Questions go to [Discussions](https://github.com/sunnat629/android-media-pack/discussions). Bugs go to [Issues](https://github.com/sunnat629/android-media-pack/issues/new/choose).
+Questions go to [Discussions](https://github.com/sunnat629/android-media-skill/discussions). Bugs go to [Issues](https://github.com/sunnat629/android-media-skill/issues/new/choose).
 
 ## License
 

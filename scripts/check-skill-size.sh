@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Enforce the SKILL.md body size budget.
 #
-# - Soft target: 10,000 to 18,000 characters.
+# - Soft target: 700 to 6,000 characters for compact skills.
 # - Hard ceiling: 20,000 characters.
 #
 # The body is everything after the closing --- of the YAML frontmatter.
@@ -11,13 +11,12 @@
 set -euo pipefail
 
 max=20000
-min_target=10000
-max_target=18000
+min_target=700
+max_target=6000
 
 fail=0
-shopt -s nullglob
 
-for file in .skills/media/*/SKILL.md; do
+while IFS= read -r file; do
     body=$(awk 'BEGIN{n=0} /^---$/{n++; next} n>=2{print}' "$file")
     chars=$(printf '%s' "$body" | wc -m | tr -d ' ')
     printf '%s -> %s chars\n' "$file" "$chars"
@@ -29,6 +28,6 @@ for file in .skills/media/*/SKILL.md; do
     elif [ "$chars" -lt "$min_target" ]; then
         echo "::warning file=$file::Body is below soft target of $min_target characters ($chars). Consider expanding."
     fi
-done
+done < <(find .skills/media -name SKILL.md -type f | sort)
 
 exit "$fail"

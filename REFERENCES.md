@@ -6,13 +6,12 @@ Curated list of trusted sources consulted when authoring and auditing skills in 
 
 | Pack version | Media3 | Tier shipped |
 |---|---|---|
+| Unreleased | 1.10.1 | Compact 19-skill refresh plus architecture |
 | 1.0.0 | 1.9.0 | Tier 1 (4 skills) |
 | 1.1.0 | 1.9.0 | Tier 2 (3 skills) |
 | 1.2.0 | 1.9.0 | Tier 3 (11 skills) |
-| 1.2.1 | 1.9.0 | docs (rename, install paths) |
-| 1.2.2 | 1.10.0 | pin bump (frontmatter-only, bodies audited at 1.9.0) |
 
-Shipped skills target **Media3 1.10.0** (released 27 March 2026). Skill bodies were last audited at Media3 1.9.0 (released 19 December 2025). For upstream Media3 release history, see the [Media3 release notes](https://developer.android.com/jetpack/androidx/releases/media3).
+Current main skills target **Media3 1.10.1**. For upstream Media3 release history, see the [Media3 release notes](https://developer.android.com/jetpack/androidx/releases/media3).
 
 ## Official sources (canonical)
 
@@ -29,12 +28,10 @@ Shipped skills target **Media3 1.10.0** (released 27 March 2026). Skill bodies w
 - Analytics: https://developer.android.com/media/media3/exoplayer/analytics
 - Migration guide: https://developer.android.com/media/media3/exoplayer/migration-guide
 - Compose UI for Media3: https://developer.android.com/media/media3/ui/compose
-- Android Developers Blog, Media3 1.10.0 announcement: https://android-developers.googleblog.com/2026/03/media3-110-is-out.html
 - Android Developers Blog, Media3 1.9.0 announcement: https://android-developers.googleblog.com/2025/12/media3-190-whats-new.html
 - Android Developers Blog, Media3 PreloadManager deep dive: https://android-developers.googleblog.com/2025/09/a-deep-dive-into-media3-preloadmanager.html
 - **androidx/media** (canonical source): https://github.com/androidx/media
 - androidx/media issue tracker: https://github.com/androidx/media/issues
-- Media3 1.10.0 release tag on GitHub: https://github.com/androidx/media/releases/tag/1.10.0
 - IMA DAI for ExoPlayer: https://developers.google.com/ad-manager/dynamic-ad-insertion/sdk/android/get-started/exoplayer-extension
 - IMA CSAI for ExoPlayer: https://developers.google.com/interactive-media-ads/docs/sdks/android/client-side/get-started/exoplayer-extension
 - Widevine DRM overview: https://developers.google.com/widevine/drm/overview
@@ -62,7 +59,7 @@ These are production or production-adjacent projects that are safe to consult fo
   https://github.com/anilbeesetti/nextplayer
 - **maxrave-dev/SimpMusic** — YouTube Music client built on Media3 `MediaSessionService`. Background audio, lock-screen transport, playlists, notification handling in Compose.
   https://github.com/maxrave-dev/SimpMusic
-- **CarGuo/GSYVideoPlayer** — Long-running Chinese-community Android video player. Custom renderer trees, gesture overlays, floating window playback. Legacy ExoPlayer patterns live here, cross-check against Media3 1.10.0.
+- **CarGuo/GSYVideoPlayer** — Long-running Chinese-community Android video player. Custom renderer trees, gesture overlays, floating window playback. Legacy ExoPlayer patterns live here, cross-check against current Media3 APIs.
   https://github.com/CarGuo/GSYVideoPlayer
 - **Doikki/DKVideoPlayer** — Lightweight Android video player with a customizable controller. Compact player UI decomposition.
   https://github.com/Doikki/DKVideoPlayer
@@ -87,7 +84,6 @@ These are production or production-adjacent projects that are safe to consult fo
 
 Community posts change over time and **MUST NOT** be cited in a skill's RIGHT example without a canonical source as the primary reference.
 
-- Media3 1.10 "is out" blog: https://android-developers.googleblog.com/2026/03/media3-110-is-out.html
 - Media3 1.9.0 "What's New" blog: https://android-developers.googleblog.com/2025/12/media3-190-whats-new.html
 - Media3 1.8.0 "What's New" (Toni Heidenreich): https://medium.com/google-exoplayer/media3-1-8-0-whats-new-b857435651b9
 - Low-latency live streaming with ExoPlayer (Toni Heidenreich): https://medium.com/google-exoplayer/low-latency-live-streaming-with-exoplayer-8552d5841060

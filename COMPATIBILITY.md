@@ -1,12 +1,12 @@
 # Compatibility
 
-The pack pins against **Media3 1.10.0** and the Android toolchain below. Skills stay valid against this matrix until the pack bumps to a new Media3 release.
+The pack pins against **Media3 1.10.1** and the Android toolchain below. Skills stay valid against this matrix until the pack bumps to a new Media3 release.
 
 ## Supported toolchain
 
 | Component | Version |
 |---|---|
-| **Media3** | 1.10.0 (released 27 March 2026) |
+| **Media3** | 1.10.1 |
 | **minSdk** | 21 (Android 5.0) |
 | **compileSdk / targetSdk** | 35 (Android 15) recommended, 34 minimum |
 | **AGP** | 8.0 or later |
@@ -15,7 +15,7 @@ The pack pins against **Media3 1.10.0** and the Android toolchain below. Skills 
 | **JDK** | 17 |
 | **Compose BOM** | 2025.11.00 or later |
 | **Material3** | 1.4.0 or later |
-| **media3-ui-compose-material3** | 1.10.0 or later |
+| **media3-ui-compose-material3** | 1.10.1 or later |
 
 ## Device matrix
 
@@ -35,7 +35,7 @@ Skills are verified against:
 - Offline downloads at the skill level
 - Transformer editing flows
 - WebRTC / WHIP integration (tracked as `not_planned`)
-- Any API marked `@ExperimentalApi` in Media3 1.10.0, including `CompositionPlayer`.
+- Any API marked `@ExperimentalApi` in Media3 1.10.1, including `CompositionPlayer`.
 
 ## Upgrade policy
 
@@ -45,13 +45,3 @@ When a new Media3 release ships:
 2. Re-review every skill whose `metadata.last_reviewed` is older than 90 days.
 3. Bump `metadata.target_media3_version` and `metadata.last_reviewed` only after peer review sign-off.
 4. Update the pack → Media3 version matrix in [REFERENCES.md](REFERENCES.md).
-
-### Bypass policy
-
-In rare cases the maintainer may ship a frontmatter-only pin bump without re-auditing skill bodies. When this happens:
-
-- The bypass **MUST** be logged in the CHANGELOG entry for that release with an explicit note.
-- The README **MUST** include a visible note stating which Media3 version the bodies were last audited against.
-- A follow-up Feature Issue **MUST** be filed to track the full audit for the next minor release.
-
-v1.2.2 was shipped under this bypass (bodies audited against 1.9.0, pin bumped to 1.10.0). Full 1.10.0 audit is tracked for v1.3.0.
