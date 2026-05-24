@@ -4,19 +4,19 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-05-24
+
 ### Added
 - `streaming-media-architecture` v1.1 (Media3 1.10.1) for top-level Android/KMP streaming architecture and reels/feed playback decisions.
 - `bin/android-media-skill` CLI with `install`, `update`, `list`, and `doctor` commands.
-- `scripts/install-media-skills.sh` for external installs from a repository link into a local project's `.skills/media` folder.
+- `scripts/install-media-skills.sh` for external installs from a repository link into a local agent skills folder.
+- `sampleApp` with a Compose Material3 home, all 19 media skills, Media3 `ContentFrame`, and Material3 playback controls.
 
 ### Changed
+- Rewrote README for readability with clearer skill descriptions, install paths, and with-vs-without-skill examples.
 - Refreshed all main skills from the newer compact skill set and bumped `metadata.target_media3_version` to Media3 1.10.1.
+- Updated the installer to flatten categorized source skills into agent-readable `<skill-name>/SKILL.md` folders.
 - Bumped the sample app Media3 version catalog entry to 1.10.1.
-- **Renamed repository** from `shunnek-media-pack` to `android-media-skill`. Pack author remains **Shunnek Labs**.
-- README simplified: flat install layout, domain-grouped skill table, removed Tier headings and duplicate task map.
-- Removed `RELEASES.md`. Media3 version matrix lives in `REFERENCES.md`.
-- Consolidated issue templates: Bug + Feature only. Questions use GitHub Discussions.
-- Slimmed `COMPATIBILITY.md` and `CONTRIBUTING.md`.
 
 ## [1.2.0] - 2026-04-17
 
@@ -62,7 +62,8 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 ### Meta
 - Initial repository scaffold: SKILL anatomy, issue types, label taxonomy.
 
-[Unreleased]: https://github.com/sunnat629/android-media-skill/compare/v1.2.0...HEAD
-[1.2.0]: https://github.com/sunnat629/android-media-skill/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/sunnat629/android-media-skill/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/sunnat629/android-media-skill/releases/tag/v1.0.0
+[Unreleased]: https://github.com/sunnat629/android-media-pack/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/sunnat629/android-media-pack/compare/v1.2.0...v1.5.0
+[1.2.0]: https://github.com/sunnat629/android-media-pack/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/sunnat629/android-media-pack/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/sunnat629/android-media-pack/releases/tag/v1.0.0
