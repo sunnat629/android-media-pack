@@ -1,7 +1,6 @@
 # android-media-pack
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![CI](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml/badge.svg)](https://github.com/sunnat629/android-media-pack/actions/workflows/ci.yml)
 [![Media3](https://img.shields.io/badge/Media3-1.10.1-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
 Media skills for AI coding agents building Android and Kotlin Multiplatform media features with **AndroidX Media3 1.10.1**.
