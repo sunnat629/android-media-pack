@@ -1,0 +1,52 @@
+name: release-v1.2.1
+
+on:
+  push:
+    paths:
+      - '.github/workflows/release-v1.2.1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Cut v1.2.1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create and push v1.2.1 tag at current HEAD
+        run: |
+          set -e
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a v1.2.1 -m 'v1.2.1, rename to android-media-pack + README overhaul' 2>/dev/null || true
+          git push origin v1.2.1 || true
+
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          set -e
+          awk -v v='1.2.1' '
+            BEGIN { found = 0 }
+            $0 ~ "^## \\["v"\\]" { found = 1; next }
+            found && /^## \[/   { exit }
+            found               { print }
+          ' CHANGELOG.md > notes-v1.2.1.md
+          if ! [ -s notes-v1.2.1.md ]; then
+            printf '%s\n' 'Release v1.2.1.' > notes-v1.2.1.md
+          fi
+          echo '--- notes-v1.2.1.md ---'
+          cat notes-v1.2.1.md
+
+      - name: Publish v1.2.1 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.2.1
+          name: v1.2.1
+          body_path: notes-v1.2.1.md
+          draft: false
+          prerelease: false

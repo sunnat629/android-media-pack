@@ -1,26 +1,29 @@
 #!/usr/bin/env bash
-# CLI for installing android-media-skill into local projects.
+# CLI for installing android-media-pack into local projects.
 
 set -euo pipefail
 
-DEFAULT_REPO_URL="https://github.com/sunnat629/android-media-skill"
+DEFAULT_REPO_URL="https://github.com/sunnat629/android-media-pack"
 DEFAULT_REF="main"
+DEFAULT_DEST=".agents/skills"
 
 usage() {
     cat <<'USAGE'
 android-media-skill <command> [args]
 
 Commands:
-  install [target-project] [repo-url] [ref]   Install media skills into .skills/media
+  install [target-project] [repo-url] [ref]   Install media skills into .agents/skills
   update  [target-project] [repo-url] [ref]   Same as install
   list    [target-project]                    List installed media skills
-  doctor  [target-project]                    Check local .skills/media
+  doctor  [target-project]                    Check local .agents/skills
   help                                      Show this help
 
 Examples:
   android-media-skill install .
-  android-media-skill install ../MyApp https://github.com/sunnat629/android-media-skill main
+  android-media-skill install ../MyApp https://github.com/sunnat629/android-media-pack main
   android-media-skill list .
+
+Set MEDIA_SKILLS_DEST=.claude/skills, .cursor/skills, or another agent folder to override the target.
 USAGE
 }
 
@@ -36,10 +39,11 @@ install_skills() {
     target_project="${1:-.}"
     repo_url="${2:-$DEFAULT_REPO_URL}"
     ref="${3:-$DEFAULT_REF}"
+    dest_subdir="${MEDIA_SKILLS_DEST:-$DEFAULT_DEST}"
     archive_url="${MEDIA_SKILLS_ARCHIVE_URL:-$(archive_url_for "$repo_url" "$ref")}"
 
     target_project="$(cd "$target_project" && pwd)"
-    dest="$target_project/.skills/media"
+    dest="$target_project/$dest_subdir"
     tmp="$(mktemp -d)"
 
     cleanup() {
@@ -55,9 +59,15 @@ install_skills() {
         exit 1
     fi
 
-    rm -rf "$dest"
     mkdir -p "$dest"
-    cp -R "$media_dir"/. "$dest"/
+
+    find "$media_dir" -name SKILL.md -type f | while IFS= read -r skill_file; do
+        skill_dir="$(dirname "$skill_file")"
+        skill_name="$(basename "$skill_dir")"
+        rm -rf "$dest/$skill_name"
+        mkdir -p "$dest/$skill_name"
+        cp -R "$skill_dir"/. "$dest/$skill_name"/
+    done
 
     count="$(find "$dest" -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l | tr -d ' ')"
     echo "Installed $count media skills to $dest"
@@ -65,28 +75,28 @@ install_skills() {
 
 list_skills() {
     target_project="${1:-.}"
-    media_dir="$(cd "$target_project" && pwd)/.skills/media"
+    media_dir="$(cd "$target_project" && pwd)/${MEDIA_SKILLS_DEST:-$DEFAULT_DEST}"
 
     if [ ! -d "$media_dir" ]; then
-        echo "No .skills/media folder found: $media_dir" >&2
+        echo "No media skills folder found: $media_dir" >&2
         exit 1
     fi
 
-    find "$media_dir" -mindepth 2 -maxdepth 2 -name SKILL.md \
-        | sed "s#^$media_dir/##; s#/SKILL.md\$##" \
+    find "$media_dir" -name SKILL.md -type f \
+        | sed 's#/SKILL.md$##; s#^.*/##' \
         | sort
 }
 
 doctor() {
     target_project="${1:-.}"
-    media_dir="$(cd "$target_project" && pwd)/.skills/media"
+    media_dir="$(cd "$target_project" && pwd)/${MEDIA_SKILLS_DEST:-$DEFAULT_DEST}"
 
     if [ ! -d "$media_dir" ]; then
         echo "missing: $media_dir" >&2
         exit 1
     fi
 
-    count="$(find "$media_dir" -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l | tr -d ' ')"
+    count="$(find "$media_dir" -name SKILL.md -type f | wc -l | tr -d ' ')"
     if [ "$count" -eq 0 ]; then
         echo "no skills found in $media_dir" >&2
         exit 1
