@@ -1,8 +1,9 @@
-package com.example.sampleapp
+package dev.sunnat629.androidmediaskill
 
-import android.content.ComponentName
+import android.graphics.Color as AndroidColor
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
@@ -14,21 +15,28 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,6 +44,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,19 +54,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.media3.common.AudioAttributes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
+import androidx.media3.common.MimeTypes
 import androidx.media3.common.Player
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.session.MediaController
-import androidx.media3.session.SessionToken
-import androidx.media3.ui.compose.material3.ContentFrame
-import androidx.media3.ui.compose.material3.PlayPauseButton
-import androidx.media3.ui.compose.material3.SeekBackButton
-import androidx.media3.ui.compose.material3.SeekForwardButton
-import com.example.sampleapp.playback.PlaybackService
-import com.google.common.util.concurrent.MoreExecutors
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.compose.ContentFrame
+import androidx.media3.ui.compose.material3.buttons.NextButton
+import androidx.media3.ui.compose.material3.buttons.PlayPauseButton
+import androidx.media3.ui.compose.material3.buttons.PreviousButton
+import androidx.media3.ui.compose.material3.buttons.SeekBackButton
+import androidx.media3.ui.compose.material3.buttons.SeekForwardButton
+import kotlinx.coroutines.delay
 
 private val skillItems = listOf(
     SkillItem(
@@ -220,10 +236,19 @@ private val skillItems = listOf(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(
+                scrim = AndroidColor.TRANSPARENT,
+                darkScrim = AndroidColor.TRANSPARENT,
+            ),
+            navigationBarStyle = SystemBarStyle.light(
+                scrim = AndroidColor.TRANSPARENT,
+                darkScrim = AndroidColor.TRANSPARENT,
+            ),
+        )
         setContent {
             SampleAppTheme {
-                val player = rememberMediaController()
+                val player = rememberSamplePlayer()
                 SkillsHome(player = player)
             }
         }
@@ -260,22 +285,34 @@ private fun SampleAppTheme(content: @Composable () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SkillsHome(player: Player?) {
+    var showSkills by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = "Android Media Skills") },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                title = { Text(text = "Android Media Skill") },
+                actions = {
+                    IconButton(onClick = { showSkills = true }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_info),
+                            contentDescription = "Skills",
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
             )
         },
+        contentWindowInsets = WindowInsets.safeDrawing,
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding),
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 18.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
@@ -283,63 +320,135 @@ private fun SkillsHome(player: Player?) {
                 Hero(player = player)
             }
             item {
-                DomainSummary()
+                SkillBrief()
             }
-            items(skillItems, key = { it.name }) { skill ->
-                SkillCard(skill = skill)
+        }
+    }
+
+    if (showSkills) {
+        SkillsInfoSheet(onDismiss = { showSkills = false })
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun Hero(player: Player?) {
+    val playback = rememberPlaybackSnapshot(player)
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(8.dp)),
+            color = Color(0xFF101715),
+        ) {
+            if (player != null) {
+                ContentFrame(
+                    player = player,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "Connecting player",
+                        color = Color.White,
+                    )
+                }
             }
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                text = playback.title,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                StreamChip(
+                    label = "HLS",
+                    selected = playback.streamType == StreamType.Hls,
+                    onClick = { player?.seekToDefaultPosition(0) },
+                )
+                StreamChip(
+                    label = "DASH",
+                    selected = playback.streamType == StreamType.Dash,
+                    onClick = { player?.seekToDefaultPosition(1) },
+                )
+            }
+        }
+        if (player != null) {
+            PlaybackProgress(playback = playback)
+            PlayerControls(player = player)
         }
     }
 }
 
-@OptIn(UnstableApi::class)
 @Composable
-private fun Hero(player: Player?) {
-    ElevatedCard(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+private fun StreamChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    FilterChip(
+        selected = selected,
+        onClick = onClick,
+        label = {
+            Text(
+                text = if (selected) "$label selected" else label,
+                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+            )
+        },
+    )
+}
+
+@Composable
+private fun PlaybackProgress(playback: PlaybackSnapshot) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(playback.bufferedFraction)
+                    .height(8.dp)
+                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.72f)),
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(playback.playedFraction)
+                    .height(8.dp)
+                    .background(MaterialTheme.colorScheme.primary),
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = "Media3 1.10.1 skill pack",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
-            Text(
-                text = "A focused home for Android and KMP media work: architecture, playback, streaming, adaptive UI, device surfaces, DRM, ads, telemetry, editing, and tests.",
-                style = MaterialTheme.typography.bodyLarge,
+                text = formatTime(playback.positionMs),
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16f / 9f)
-                    .clip(RoundedCornerShape(20.dp)),
-                color = Color(0xFF101715),
-            ) {
-                if (player != null) {
-                    ContentFrame(
-                        player = player,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(
-                            text = "Connecting MediaController",
-                            color = Color.White,
-                        )
-                    }
-                }
-            }
-            if (player != null) {
-                PlayerControls(player = player)
-            }
+            Text(
+                text = formatTime(playback.durationMs),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }
@@ -351,29 +460,28 @@ private fun PlayerControls(player: Player) {
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        PreviousButton(player = player)
         SeekBackButton(player = player)
         PlayPauseButton(player = player)
         SeekForwardButton(player = player)
+        NextButton(player = player)
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun DomainSummary() {
-    val domains = skillItems
-        .groupBy { it.domain }
-        .map { (domain, skills) -> domain to skills.size }
-
-    ElevatedCard(
+private fun SkillBrief() {
+    Surface(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                text = "${skillItems.size} skills",
+                text = "Skill coverage",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -382,12 +490,58 @@ private fun DomainSummary() {
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                domains.forEach { (domain, count) ->
-                    AssistChip(
-                        onClick = {},
-                        label = { Text(text = "$domain $count") },
-                    )
-                }
+                MetricPill(value = "${skillItems.size}", label = "skills")
+                MetricPill(value = "HLS", label = "live/VOD")
+                MetricPill(value = "DASH", label = "adaptive")
+                MetricPill(value = "Media3", label = "Compose")
+            }
+        }
+    }
+}
+
+@Composable
+private fun MetricPill(value: String, label: String) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 1.dp,
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 9.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SkillsInfoSheet(onDismiss: () -> Unit) {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            item {
+                Text(
+                    text = "${skillItems.size} Media3 skills",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+            items(skillItems, key = { it.name }) { skill ->
+                SkillCard(skill = skill)
             }
         }
     }
@@ -397,7 +551,7 @@ private fun DomainSummary() {
 private fun SkillCard(skill: SkillItem) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(8.dp),
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -461,21 +615,158 @@ private fun DomainDot(domain: String) {
 }
 
 @Composable
-private fun rememberMediaController(): Player? {
+private fun rememberSamplePlayer(): Player? {
     val context = LocalContext.current
+    val lifecycle = (context as? ComponentActivity)?.lifecycle
     var player by remember { mutableStateOf<Player?>(null) }
-    DisposableEffect(context) {
-        val token = SessionToken(context, ComponentName(context, PlaybackService::class.java))
-        val future = MediaController.Builder(context, token).buildAsync()
-        future.addListener({
-            player = future.get()
-        }, MoreExecutors.directExecutor())
+    DisposableEffect(context, lifecycle) {
+        var released = false
+        val exoPlayer = ExoPlayer.Builder(context)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                    .build(),
+                /* handleAudioFocus = */ true,
+            )
+            .setHandleAudioBecomingNoisy(true)
+            .build()
+            .apply {
+                setMediaItems(sampleMediaItems())
+                prepare()
+            }
+        player = exoPlayer
+
+        fun releasePlayer() {
+            if (!released) {
+                exoPlayer.pause()
+                exoPlayer.release()
+                released = true
+                player = null
+            }
+        }
+
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_STOP -> exoPlayer.pause()
+                Lifecycle.Event.ON_DESTROY -> releasePlayer()
+                else -> Unit
+            }
+        }
+        lifecycle?.addObserver(observer)
+
         onDispose {
-            (player as? MediaController)?.release()
-            player = null
+            lifecycle?.removeObserver(observer)
+            releasePlayer()
         }
     }
     return player
+}
+
+private fun sampleMediaItems(): List<MediaItem> =
+    listOf(
+        MediaItem.Builder()
+            .setMediaId("hls")
+            .setUri("https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8")
+            .setMimeType(MimeTypes.APPLICATION_M3U8)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle("HLS: Angel One")
+                    .setArtist("Shaka demo assets")
+                    .build(),
+            )
+            .build(),
+        MediaItem.Builder()
+            .setMediaId("dash")
+            .setUri("https://storage.googleapis.com/wvmedia/clear/h264/tears/tears.mpd")
+            .setMimeType(MimeTypes.APPLICATION_MPD)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle("DASH: Tears")
+                    .setArtist("ExoPlayer demo sample")
+                    .build(),
+            )
+            .build(),
+    )
+
+@Composable
+private fun rememberPlaybackSnapshot(player: Player?): PlaybackSnapshot {
+    var snapshot by remember(player) { mutableStateOf(player.toPlaybackSnapshot()) }
+    LaunchedEffect(player) {
+        while (player != null) {
+            snapshot = player.toPlaybackSnapshot()
+            delay(500)
+        }
+    }
+    return snapshot
+}
+
+private fun Player?.toPlaybackSnapshot(): PlaybackSnapshot {
+    if (this == null) {
+        return PlaybackSnapshot()
+    }
+
+    val resolvedDurationMs = duration.takeIf { it != C.TIME_UNSET && it > 0 } ?: 0L
+    val mediaId = currentMediaItem?.mediaId.orEmpty()
+    val currentTitle = currentMediaItem
+        ?.mediaMetadata
+        ?.title
+        ?.toString()
+        ?: "HLS + DASH sample"
+
+    return PlaybackSnapshot(
+        title = currentTitle,
+        streamType = StreamType.fromMediaId(mediaId),
+        positionMs = currentPosition.coerceAtLeast(0L),
+        durationMs = resolvedDurationMs,
+        bufferedMs = bufferedPosition.coerceAtLeast(0L),
+    )
+}
+
+private fun formatTime(timeMs: Long): String {
+    if (timeMs <= 0) {
+        return "0:00"
+    }
+    val totalSeconds = timeMs / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "$minutes:${seconds.toString().padStart(2, '0')}"
+}
+
+private data class PlaybackSnapshot(
+    val title: String = "Connecting player",
+    val streamType: StreamType = StreamType.Unknown,
+    val positionMs: Long = 0L,
+    val durationMs: Long = 0L,
+    val bufferedMs: Long = 0L,
+) {
+    val playedFraction: Float
+        get() = progressFraction(positionMs)
+
+    val bufferedFraction: Float
+        get() = progressFraction(bufferedMs)
+
+    private fun progressFraction(value: Long): Float {
+        if (durationMs <= 0L) {
+            return 0f
+        }
+        return (value.toFloat() / durationMs.toFloat()).coerceIn(0f, 1f)
+    }
+}
+
+private enum class StreamType {
+    Hls,
+    Dash,
+    Unknown;
+
+    companion object {
+        fun fromMediaId(mediaId: String): StreamType =
+            when (mediaId) {
+                "hls" -> Hls
+                "dash" -> Dash
+                else -> Unknown
+            }
+    }
 }
 
 private data class SkillItem(

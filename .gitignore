@@ -2,3 +2,6 @@
 .agent/
 .idea/
 .skills/.DS_Store
+sampleApp/.gradle/
+sampleApp/build/
+sampleApp/app/build/

@@ -5,6 +5,8 @@ Current versions: **android-media-pack v2.0.0** · **Media3 1.10.1**
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Media3](https://img.shields.io/badge/Media3-1.10.1-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
+<img src="cover.png" alt="Android Media Skill cover" width="100%">
+
 Media skills for AI coding agents building Android and Kotlin Multiplatform media features with **AndroidX Media3 1.10.1**.
 
 Use this pack when you want an agent to change real media code without guessing from stale ExoPlayer examples, old blog posts, or generic Android advice.
@@ -161,7 +163,13 @@ The agent should load the matching skill and use it as task context.
 
 ## Sample App
 
-`sampleApp/` shows a Compose Material3 home screen listing every skill and a Media3 player area using Media3 Compose UI.
+`sampleApp/` is a Compose Material3 demo app with a large Media3 Compose video surface, HLS and DASH sample streams, playback controls, a progress bar, and a compact skills summary. The full skill list is behind the top info button so the home screen stays focused on playback.
+
+Run it from the repository root:
+
+```bash
+./run-sample-app.sh --serial <device-serial>
+```
 
 ## Related
 
