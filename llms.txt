@@ -1,0 +1,74 @@
+# android-media-pack
+
+> AndroidX Media3 1.10.1 skill pack for AI coding agents and Android/Kotlin Multiplatform developers.
+
+android-media-pack helps coding agents work on production Android media apps without relying on stale ExoPlayer examples or generic Android advice. Use it for ExoPlayer 2.x to AndroidX Media3 migration, Media3 Compose UI, View-based PlayerView interop, streaming architecture, HLS, DASH, live streams, VOD, RTSP, SmoothStreaming, audio, background playback, MediaSessionService, Widevine DRM, IMA ads, QoE analytics, metadata inspection, thumbnails, Transformer export, video effects, WorkManager offline operations, Android TV, Android Auto, Android XR, and Media3 tests.
+
+The pack targets Media3 1.10.1. Keep Media3 APIs in Android source sets for KMP apps, and expose KMP-safe state, events, repositories, and telemetry contracts upward.
+
+This file is a retrieval index for LLMs and coding agents. It is not a robots policy and does not guarantee search ranking.
+
+## Core docs
+
+- [README](https://github.com/sunnat629/android-media-pack/blob/main/README.md): Main project overview, install commands, agent paths, use examples, and the full skill table.
+- [Compatibility](https://github.com/sunnat629/android-media-pack/blob/main/COMPATIBILITY.md): Media3, Android SDK, AGP, Kotlin, Gradle, JDK, Compose, Material3, and device matrix.
+- [References](https://github.com/sunnat629/android-media-pack/blob/main/REFERENCES.md): Canonical Media3 docs, trusted Android sources, reference apps, and source-of-truth policy.
+- [Changelog](https://github.com/sunnat629/android-media-pack/blob/main/CHANGELOG.md): Version history for the pack.
+- [Contributing](https://github.com/sunnat629/android-media-pack/blob/main/CONTRIBUTING.md): Contribution rules and skill quality expectations.
+- [Security](https://github.com/sunnat629/android-media-pack/blob/main/SECURITY.md): Security reporting policy.
+
+## Install
+
+- [CLI installer](https://github.com/sunnat629/android-media-pack/blob/main/bin/android-media-skill): `android-media-skill install`, `update`, `list`, and `doctor`.
+- [One-line install script](https://github.com/sunnat629/android-media-pack/blob/main/scripts/install-media-skills.sh): Installs source skills from this repo into a target project's agent skills folder.
+- [Sample app launcher](https://github.com/sunnat629/android-media-pack/blob/main/run-sample-app.sh): Runs the Compose Media3 sample app on an Android device.
+
+## Architecture and migration skills
+
+- [streaming-media-architecture](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/streaming-media-architecture/SKILL.md): Production Android/KMP streaming architecture, player ownership, bounded preloading, feeds, repositories, offline-first data, and telemetry.
+- [migrate-exoplayer-to-media3](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/migration/migrate-exoplayer-to-media3/SKILL.md): Legacy ExoPlayer 2.x package and API migration to AndroidX Media3.
+- [migrate-xml-ui-to-compose](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/migration/migrate-xml-ui-to-compose/SKILL.md): Migration from XML PlayerView media UI to Media3 Compose UI.
+
+## UI and device skills
+
+- [media3-compose-ui-material3](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/ui/media3-compose-ui-material3/SKILL.md): Media3 Compose UI, ContentFrame, PlayerSurface, controls, lifecycle-safe state, and Material3.
+- [media3-adaptive-compose-ui](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/ui/media3-adaptive-compose-ui/SKILL.md): Adaptive Media3 Compose UI for phones, tablets, foldables, large screens, orientation changes, and system insets.
+- [media3-view-ui-player](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/ui/media3-view-ui-player/SKILL.md): View-based PlayerView UI, XML boundaries, lifecycle attach/release, and Compose interop.
+- [media3-tv-leanback-ui](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/ui/media3-tv-leanback-ui/SKILL.md): Android TV Media3 playback UI with Leanback, D-pad focus, overscan-safe controls, and TV UX rules.
+- [media3-android-auto-media-surface](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/ui/media3-android-auto-media-surface/SKILL.md): Android Auto media sessions, browsable media, transport controls, and safety constraints.
+- [media3-xr-media-surface](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/ui/media3-xr-media-surface/SKILL.md): Android XR media playback surfaces, immersive layout, controller input, and fallback behavior.
+
+## Playback and streaming skills
+
+- [media3-video-playback](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/playback/media3-video-playback/SKILL.md): Video surfaces, aspect ratio, first frame, HDR, PiP, and feed-safe handoff.
+- [media3-audio-playback](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/playback/media3-audio-playback/SKILL.md): Audio attributes, audio focus, becoming-noisy, chapters, metadata, and session controls.
+- [media3-vod-playback](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/playback/media3-vod-playback/SKILL.md): VOD items, resume position, playlists, chapters, thumbnails, and next-item preload.
+- [media3-rtsp-playback](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/playback/media3-rtsp-playback/SKILL.md): RTSP camera feeds, network stream caveats, buffering, and Android source-set boundaries.
+- [media3-smoothstreaming-playback](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/playback/media3-smoothstreaming-playback/SKILL.md): SmoothStreaming playback, manifest handling, fallback decisions, and adaptive stream caveats.
+- [media3-midi-playback](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/playback/media3-midi-playback/SKILL.md): MIDI playback dependency checks, decoder/runtime caveats, and Android playback integration.
+- [media3-hls-dash-adaptive-streaming](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/streaming/media3-hls-dash-adaptive-streaming/SKILL.md): HLS/DASH adaptive streaming, manifests, subtitles, live-vs-VOD behavior, and buffer policy.
+- [media3-live-streaming](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/streaming/media3-live-streaming/SKILL.md): Live streams, live offset, DVR window, catch-up, reconnect, and behind-live-window recovery.
+- [media3-live-only-streaming](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/streaming/media3-live-only-streaming/SKILL.md): Non-DVR live streams where seeking and resume do not exist.
+
+## Delivery, protection, ads, analytics, processing, and tests
+
+- [media3-datasources-networking](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/delivery/media3-datasources-networking/SKILL.md): HTTP DataSource, OkHttp, Cronet, HttpEngine, cache, headers, auth, and custom DataSource decisions.
+- [media3-bandwidth-abr](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/delivery/media3-bandwidth-abr/SKILL.md): Bandwidth estimation, ABR limits, load control, network constraints, and preload contention.
+- [media3-cast-integration](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/delivery/media3-cast-integration/SKILL.md): CastPlayer, local-to-remote handoff, MediaRouteButton, and Cast session lifecycle.
+- [media3-drm-widevine-setup](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/protection/media3-drm-widevine-setup/SKILL.md): Widevine DRM, license headers, offline licenses, L1/L3, HDCP, and failure recovery.
+- [media3-ads-ima](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/ads-analytics/media3-ads-ima/SKILL.md): Google IMA CSAI/SSAI ad insertion, AdViewProvider, companions, and ad telemetry.
+- [media3-analytics-telemetry](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/ads-analytics/media3-analytics-telemetry/SKILL.md): QoE telemetry, TTFF, rebuffer, dropped frames, ABR, preload hit/miss, and player errors.
+- [media3-inspector-metadata-thumbnails](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/inspector/media3-inspector-metadata-thumbnails/SKILL.md): Inspector metadata, thumbnail/frame extraction, and container sample inspection without playback.
+- [media3-workmanager-offline-ops](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/background/media3-workmanager-offline-ops/SKILL.md): WorkManager-backed offline operations, scheduling, retries, constraints, and foreground handoff.
+- [media3-background-playback-service](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/background/media3-background-playback-service/SKILL.md): MediaSessionService, MediaController, notification, media buttons, and service lifetime.
+- [media3-lifecycle-state](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/background/media3-lifecycle-state/SKILL.md): Lifecycle-aware MediaController, player state, saved position, process death, and release safety.
+- [media3-transformer-editing](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/processing/media3-transformer-editing/SKILL.md): Media3 Transformer editing and export workflows, trim, transcode, progress, cancellation, and errors.
+- [media3-video-effects-lottie-muxer](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/processing/media3-video-effects-lottie-muxer/SKILL.md): Video effects, Lottie effects, muxer/export decisions, and Transformer-adjacent processing boundaries.
+- [media3-test-utils-robolectric](https://github.com/sunnat629/android-media-pack/blob/main/.skills/media/testing/media3-test-utils-robolectric/SKILL.md): Media3 test utilities, Robolectric patterns, JVM boundaries, fake playback state, and realistic media assertions.
+
+## Optional
+
+- [Marketing prompts](https://github.com/sunnat629/android-media-pack/blob/main/MARKETING_PROMPTS.md): Social captions and image prompts for promoting the pack.
+- [Sample app](https://github.com/sunnat629/android-media-pack/tree/main/sampleApp): Compose Material3 demo with Media3 playback controls and stream choices.
+- [GitHub issues](https://github.com/sunnat629/android-media-pack/issues): Bugs and feature requests.
+- [GitHub discussions](https://github.com/sunnat629/android-media-pack/discussions): Questions and usage discussion.

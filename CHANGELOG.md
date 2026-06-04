@@ -4,6 +4,10 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 
 ## [Unreleased]
 
+### Added
+
+- Added a root `llms.txt` retrieval index and clearer README discovery copy for search engines, repository search, and LLM-powered coding agents.
+
 ## [2.0.0] - 2026-05-24
 
 ### Added

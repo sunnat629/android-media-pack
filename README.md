@@ -1,15 +1,32 @@
-# android-media-pack
+# android-media-pack: Android Media3 Skills for AI Coding Agents
 
 Current versions: **android-media-pack v2.0.0** · **Media3 1.10.1**
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Media3](https://img.shields.io/badge/Media3-1.10.1-brightgreen.svg)](https://developer.android.com/jetpack/androidx/releases/media3)
 
-<img src="cover.png" alt="Android Media Skill cover" width="100%">
+<img src="cover.png" alt="android-media-pack cover for AndroidX Media3 AI coding agent skills" width="100%">
 
-Media skills for AI coding agents building Android and Kotlin Multiplatform media features with **AndroidX Media3 1.10.1**.
+AndroidX Media3 skill pack for AI coding agents building Android and Kotlin Multiplatform media apps with **Media3 1.10.1**.
 
-Use this pack when you want an agent to change real media code without guessing from stale ExoPlayer examples, old blog posts, or generic Android advice.
+Use this pack when you want OpenAI Codex, GitHub Copilot, Claude Code, Cursor, Gemini CLI, or another coding agent to change real media code without guessing from stale ExoPlayer examples, old blog posts, or generic Android advice.
+
+It is built for common Android media development searches: ExoPlayer to Media3 migration, Media3 Compose player UI, Android streaming architecture, HLS and DASH playback, live streams, VOD, background playback, Widevine DRM, IMA ads, QoE analytics, thumbnails, Transformer export, and Media3 tests.
+
+## Search and LLM Discovery
+
+This repository is written in plain Markdown so search engines, repository search, and LLM retrieval tools can understand the project from the README and linked docs.
+
+For LLM-friendly retrieval, use [llms.txt](llms.txt). It is a compact index of the pack, install commands, canonical docs, and all 31 skill files.
+
+Common discovery phrases this pack answers:
+
+- Android Media3 skills for AI coding agents
+- AndroidX Media3 skill pack for Codex, Copilot, Claude Code, Cursor, and Gemini CLI
+- ExoPlayer to Media3 migration skill
+- Media3 Compose UI player skill
+- Android KMP streaming media architecture
+- Media3 HLS DASH DRM ads analytics testing skills
 
 ## What You Get
 
@@ -177,7 +194,7 @@ Complements [android/skills](https://github.com/android/skills). Same `SKILL.md`
 
 ## Docs
 
-[Changelog](CHANGELOG.md) · [Compatibility](COMPATIBILITY.md) · [Contributing](CONTRIBUTING.md) · [References](REFERENCES.md) · [Security](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
+[LLM index](llms.txt) · [Changelog](CHANGELOG.md) · [Compatibility](COMPATIBILITY.md) · [Contributing](CONTRIBUTING.md) · [References](REFERENCES.md) · [Security](SECURITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md)
 
 Questions go to [Discussions](https://github.com/sunnat629/android-media-pack/discussions). Bugs go to [Issues](https://github.com/sunnat629/android-media-pack/issues/new/choose).
 
