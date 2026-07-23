@@ -28,30 +28,42 @@ USAGE
 }
 
 archive_url_for() {
-    repo_url="${1%.git}"
-    repo_url="${repo_url%/}"
+    local repo_url ref ref_type
+    repo_url="${1%/}"
+    repo_url="${repo_url%.git}"
     ref="$2"
     ref_type="${MEDIA_SKILLS_REF_TYPE:-heads}"
     printf '%s/archive/refs/%s/%s.tar.gz\n' "$repo_url" "$ref_type" "$ref"
 }
 
 install_skills() {
+    local target_project repo_url ref dest_subdir archive_url dest tmp
+    local media_dir manifest skill_file skill_dir skill_name old_skill count
     target_project="${1:-.}"
     repo_url="${2:-$DEFAULT_REPO_URL}"
     ref="${3:-$DEFAULT_REF}"
     dest_subdir="${MEDIA_SKILLS_DEST:-$DEFAULT_DEST}"
     archive_url="${MEDIA_SKILLS_ARCHIVE_URL:-$(archive_url_for "$repo_url" "$ref")}"
 
+    if [ ! -d "$target_project" ]; then
+        echo "Target project folder does not exist: $target_project" >&2
+        exit 1
+    fi
     target_project="$(cd "$target_project" && pwd)"
-    dest="$target_project/$dest_subdir"
+
+    # MEDIA_SKILLS_DEST may be relative to the target project or absolute.
+    case "$dest_subdir" in
+        /*) dest="$dest_subdir" ;;
+        *) dest="$target_project/$dest_subdir" ;;
+    esac
+
     tmp="$(mktemp -d)"
+    trap 'rm -rf "'"$tmp"'"' EXIT
 
-    cleanup() {
-        rm -rf "$tmp"
-    }
-    trap cleanup EXIT
-
-    curl -fsSL "$archive_url" | tar -xz -C "$tmp"
+    if ! curl -fsSL "$archive_url" | tar -xz -C "$tmp"; then
+        echo "Failed to download or extract skill archive: $archive_url" >&2
+        exit 1
+    fi
 
     media_dir="$(find "$tmp" -type d -path '*/.skills/media' -print -quit)"
     if [ -z "$media_dir" ]; then
@@ -60,16 +72,43 @@ install_skills() {
     fi
 
     mkdir -p "$dest"
+    manifest="$dest/.android-media-pack-manifest"
 
-    find "$media_dir" -name SKILL.md -type f | while IFS= read -r skill_file; do
+    local installed=()
+    count=0
+    while IFS= read -r skill_file; do
         skill_dir="$(dirname "$skill_file")"
         skill_name="$(basename "$skill_dir")"
-        rm -rf "$dest/$skill_name"
+        if printf '%s\n' "${installed[@]:-}" | grep -qx "$skill_name"; then
+            echo "warning: duplicate skill folder name '$skill_name' in archive; keeping first occurrence" >&2
+            continue
+        fi
+        rm -rf "${dest:?}/$skill_name"
         mkdir -p "$dest/$skill_name"
         cp -R "$skill_dir"/. "$dest/$skill_name"/
-    done
+        installed+=("$skill_name")
+        count=$((count + 1))
+    done < <(find "$media_dir" -name SKILL.md -type f | sort)
 
-    count="$(find "$dest" -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l | tr -d ' ')"
+    if [ "$count" -eq 0 ]; then
+        echo "Archive has a .skills/media folder but no SKILL.md files: $archive_url" >&2
+        exit 1
+    fi
+
+    # Remove skills recorded by a previous install that no longer exist
+    # upstream (renamed or retired). Skills never listed in the manifest
+    # are unrelated and stay untouched.
+    if [ -f "$manifest" ]; then
+        while IFS= read -r old_skill; do
+            [ -n "$old_skill" ] || continue
+            if ! printf '%s\n' "${installed[@]}" | grep -qx "$old_skill"; then
+                rm -rf "${dest:?}/$old_skill"
+                echo "Removed stale skill: $old_skill"
+            fi
+        done < "$manifest"
+    fi
+    printf '%s\n' "${installed[@]}" > "$manifest"
+
     echo "Installed $count media skills to $dest"
 }
 
