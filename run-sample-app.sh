@@ -45,7 +45,9 @@ while [ "$#" -gt 0 ]; do
             ;;
         --serial)
             shift
-            [ "$#" -gt 0 ] && [ -n "$1" ] || die "--serial requires a non-empty value"
+            if [ "$#" -eq 0 ] || [ -z "$1" ]; then
+                die "--serial requires a non-empty value"
+            fi
             serial="$1"
             ;;
         -h|--help)
