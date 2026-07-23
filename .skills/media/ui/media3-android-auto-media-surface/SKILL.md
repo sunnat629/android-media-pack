@@ -4,9 +4,9 @@ description: "Compact skill for Android Auto media playback surfaces using Media
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
-  version: "1.0"
+  version: "1.1"
   target_media3_version: "1.10.1"
-  last_reviewed: "2026-05-24"
+  last_reviewed: "2026-07-23"
   keywords:
     - android
     - media3
@@ -40,8 +40,19 @@ media3-session = { module = "androidx.media3:media3-session", version.ref = "med
 <service
     android:name=".playback.PlaybackService"
     android:exported="true"
-    android:foregroundServiceType="mediaPlayback" />
+    android:foregroundServiceType="mediaPlayback">
+    <intent-filter>
+        <action android:name="androidx.media3.session.MediaSessionService" />
+        <action android:name="android.media.browse.MediaBrowserService" />
+    </intent-filter>
+</service>
+
+<meta-data
+    android:name="com.google.android.gms.car.application"
+    android:resource="@xml/automotive_app_desc" />
 ```
+
+The intent-filter actions let Auto discover and bind the service for both Media3 and legacy browser clients. The `automotive_app_desc` meta-data (an XML resource declaring `<uses name="media"/>`) marks the app as an Auto media app; without it Auto will not surface the app.
 
 ## Do Not
 

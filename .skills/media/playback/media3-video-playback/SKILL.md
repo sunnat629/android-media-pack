@@ -4,9 +4,9 @@ description: "Compact skill for Media3 1.10.1 video surfaces, aspect ratio, firs
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
-  version: "1.1"
+  version: "1.2"
   target_media3_version: "1.10.1"
-  last_reviewed: "2026-05-24"
+  last_reviewed: "2026-07-23"
   keywords:
     - android
     - media3
@@ -30,7 +30,7 @@ Use for video rendering bugs, blink/flicker, wrong crop, first-frame handoff, Pi
 - Keep Media3 APIs in Android source sets; expose KMP-safe state/events upward.
 - Use `onRenderedFirstFrame` plus media identity to remove placeholders.
 - Do not change surface type while the player is attached.
-- Inline scrollers may use `TextureView`; fullscreen/HDR should prefer `SurfaceView`.
+- `SurfaceView` is **PREFERRED** everywhere, including inline scrollers. Fall back to `TextureView` only when `SurfaceView` cannot satisfy the requirement, for example smooth scroll or transition animation on pre-API 24 devices. `TextureView` costs more power, has weaker frame timing, and cannot show HDR or secure (DRM) output.
 - Aspect comes from `onVideoSizeChanged`, not thumbnail size.
 
 ## Example

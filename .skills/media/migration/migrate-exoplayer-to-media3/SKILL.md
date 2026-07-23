@@ -44,3 +44,5 @@ com.google.android.exoplayer2.ExoPlayer -> androidx.media3.exoplayer.ExoPlayer
 - `media3-background-playback-service`
 - `media3-compose-ui-material3`
 - `media3-datasources-networking`
+- [references/package-mapping.md](references/package-mapping.md) for the full ExoPlayer 2.x to Media3 package map
+- [references/media3-1.10-api-changes.md](references/media3-1.10-api-changes.md) for API movement relevant to this migration

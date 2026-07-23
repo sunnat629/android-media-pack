@@ -45,7 +45,9 @@ while [ "$#" -gt 0 ]; do
             ;;
         --serial)
             shift
-            [ "$#" -gt 0 ] || die "--serial requires a value"
+            if [ "$#" -eq 0 ] || [ -z "$1" ]; then
+                die "--serial requires a non-empty value"
+            fi
             serial="$1"
             ;;
         -h|--help)
@@ -91,19 +93,21 @@ command -v adb >/dev/null 2>&1 || die "adb not found on PATH. Install Android pl
 
 find_cached_gradle() {
     [ -d "$HOME/.gradle/wrapper/dists" ] || return 0
-    preferred_gradle="$(find "$HOME/.gradle/wrapper/dists" -path "*/gradle-9.4.1*/bin/gradle" -type f 2>/dev/null | sort | head -n 1)"
-    if [ -n "$preferred_gradle" ]; then
-        printf '%s\n' "$preferred_gradle"
-        return 0
+    # Prefer the version the wrapper pins so a cached-dist build matches
+    # what ./gradlew would use; otherwise take the newest cached dist.
+    wrapper_props="$project_dir/gradle/wrapper/gradle-wrapper.properties"
+    if [ -f "$wrapper_props" ]; then
+        pinned_version="$(sed -n 's#.*gradle-\([0-9][0-9.]*\)-\(bin\|all\)\.zip.*#\1#p' "$wrapper_props" | head -n 1)"
+        if [ -n "$pinned_version" ]; then
+            pinned_gradle="$(find "$HOME/.gradle/wrapper/dists" -path "*/gradle-$pinned_version*/bin/gradle" -type f 2>/dev/null | head -n 1)"
+            if [ -n "$pinned_gradle" ]; then
+                printf '%s\n' "$pinned_gradle"
+                return 0
+            fi
+        fi
     fi
 
-    latest_gradle="$(find "$HOME/.gradle/wrapper/dists" -path "*/gradle-9*/bin/gradle" -type f 2>/dev/null | sort | tail -n 1)"
-    if [ -n "$latest_gradle" ]; then
-        printf '%s\n' "$latest_gradle"
-        return 0
-    fi
-
-    find "$HOME/.gradle/wrapper/dists" -path "*/gradle-8*/bin/gradle" -type f 2>/dev/null | sort | tail -n 1
+    find "$HOME/.gradle/wrapper/dists" -path "*/gradle-[89]*/bin/gradle" -type f 2>/dev/null | sort -V | tail -n 1
 }
 
 if [ -n "${GRADLE_BIN:-}" ]; then

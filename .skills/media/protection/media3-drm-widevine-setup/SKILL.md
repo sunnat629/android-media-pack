@@ -43,3 +43,6 @@ MediaItem.DrmConfiguration.Builder(C.WIDEVINE_UUID)
 
 - `media3-datasources-networking`
 - `media3-analytics-telemetry`
+- [references/license-server.md](references/license-server.md) for license server setup and request headers
+- [references/offline-licenses.md](references/offline-licenses.md) for offline key download, restore, and release
+- [references/provisioning.md](references/provisioning.md) for device provisioning and security-level failures

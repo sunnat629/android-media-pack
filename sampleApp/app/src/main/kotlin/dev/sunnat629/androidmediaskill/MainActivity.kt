@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +49,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,12 +64,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.compose.ContentFrame
 import androidx.media3.ui.compose.material3.buttons.NextButton
@@ -331,6 +338,7 @@ private fun SkillsHome(player: Player?) {
 }
 
 @OptIn(ExperimentalLayoutApi::class)
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 private fun Hero(player: Player?) {
     val playback = rememberPlaybackSnapshot(player)
@@ -342,24 +350,33 @@ private fun Hero(player: Player?) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
+                .aspectRatio(playback.videoAspectRatio)
                 .clip(RoundedCornerShape(8.dp)),
             color = Color(0xFF101715),
         ) {
-            if (player != null) {
-                ContentFrame(
-                    player = player,
-                    modifier = Modifier.fillMaxSize(),
-                )
-            } else {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "Connecting player",
-                        color = Color.White,
+            when {
+                playback.errorMessage != null -> {
+                    PlaybackError(
+                        message = playback.errorMessage,
+                        onRetry = { player?.prepare() },
                     )
+                }
+                player != null -> {
+                    ContentFrame(
+                        player = player,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+                else -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Text(
+                            text = "Connecting player",
+                            color = Color.White,
+                        )
+                    }
                 }
             }
         }
@@ -453,6 +470,38 @@ private fun PlaybackProgress(playback: PlaybackSnapshot) {
     }
 }
 
+@Composable
+private fun PlaybackError(
+    message: String,
+    onRetry: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "Playback failed",
+            color = Color.White,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Text(
+            text = message,
+            color = Color.White.copy(alpha = 0.8f),
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Button(onClick = onRetry) {
+            Text(text = "Retry")
+        }
+    }
+}
+
+@androidx.annotation.OptIn(UnstableApi::class)
 @Composable
 private fun PlayerControls(player: Player) {
     Row(
@@ -617,7 +666,10 @@ private fun DomainDot(domain: String) {
 @Composable
 private fun rememberSamplePlayer(): Player? {
     val context = LocalContext.current
-    val lifecycle = (context as? ComponentActivity)?.lifecycle
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    var restoreState by rememberSaveable(stateSaver = PlaybackRestoreState.Saver) {
+        mutableStateOf(PlaybackRestoreState())
+    }
     var player by remember { mutableStateOf<Player?>(null) }
     DisposableEffect(context, lifecycle) {
         var released = false
@@ -632,14 +684,29 @@ private fun rememberSamplePlayer(): Player? {
             .setHandleAudioBecomingNoisy(true)
             .build()
             .apply {
-                setMediaItems(sampleMediaItems())
+                setMediaItems(
+                    sampleMediaItems(),
+                    restoreState.mediaItemIndex,
+                    restoreState.positionMs,
+                )
+                playWhenReady = restoreState.playWhenReady
                 prepare()
             }
         player = exoPlayer
 
+        fun saveRestoreState(playWhenReady: Boolean = exoPlayer.playWhenReady) {
+            restoreState = PlaybackRestoreState(
+                mediaItemIndex = exoPlayer.currentMediaItemIndex,
+                positionMs = exoPlayer.currentPosition.coerceAtLeast(0L),
+                playWhenReady = playWhenReady,
+            )
+        }
+
         fun releasePlayer() {
             if (!released) {
-                exoPlayer.pause()
+                // ON_STOP already paused the player, so keep the playWhenReady
+                // intent captured there instead of the post-pause value.
+                saveRestoreState(playWhenReady = restoreState.playWhenReady)
                 exoPlayer.release()
                 released = true
                 player = null
@@ -648,19 +715,42 @@ private fun rememberSamplePlayer(): Player? {
 
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_STOP -> exoPlayer.pause()
+                Lifecycle.Event.ON_STOP -> {
+                    // Capture playWhenReady before pausing so rotation resumes playback.
+                    saveRestoreState()
+                    exoPlayer.pause()
+                }
                 Lifecycle.Event.ON_DESTROY -> releasePlayer()
                 else -> Unit
             }
         }
-        lifecycle?.addObserver(observer)
+        lifecycle.addObserver(observer)
 
         onDispose {
-            lifecycle?.removeObserver(observer)
+            lifecycle.removeObserver(observer)
             releasePlayer()
         }
     }
     return player
+}
+
+private data class PlaybackRestoreState(
+    val mediaItemIndex: Int = 0,
+    val positionMs: Long = 0L,
+    val playWhenReady: Boolean = false,
+) {
+    companion object {
+        val Saver: Saver<PlaybackRestoreState, Any> = listSaver(
+            save = { listOf(it.mediaItemIndex, it.positionMs, it.playWhenReady) },
+            restore = {
+                PlaybackRestoreState(
+                    mediaItemIndex = it[0] as Int,
+                    positionMs = it[1] as Long,
+                    playWhenReady = it[2] as Boolean,
+                )
+            },
+        )
+    }
 }
 
 private fun sampleMediaItems(): List<MediaItem> =
@@ -692,8 +782,26 @@ private fun sampleMediaItems(): List<MediaItem> =
 @Composable
 private fun rememberPlaybackSnapshot(player: Player?): PlaybackSnapshot {
     var snapshot by remember(player) { mutableStateOf(player.toPlaybackSnapshot()) }
-    LaunchedEffect(player) {
-        while (player != null) {
+    DisposableEffect(player) {
+        if (player == null) {
+            return@DisposableEffect onDispose {}
+        }
+        val listener = object : Player.Listener {
+            override fun onPlayerError(error: PlaybackException) {
+                snapshot = player.toPlaybackSnapshot()
+            }
+
+            override fun onEvents(player: Player, events: Player.Events) {
+                snapshot = player.toPlaybackSnapshot()
+            }
+        }
+        player.addListener(listener)
+        onDispose { player.removeListener(listener) }
+    }
+    // Position/buffer only advance smoothly while playing; every other field is
+    // updated by the Player.Listener above.
+    LaunchedEffect(player, snapshot.isPlaying) {
+        while (player != null && snapshot.isPlaying) {
             snapshot = player.toPlaybackSnapshot()
             delay(500)
         }
@@ -713,6 +821,12 @@ private fun Player?.toPlaybackSnapshot(): PlaybackSnapshot {
         ?.title
         ?.toString()
         ?: "HLS + DASH sample"
+    val size = videoSize
+    val aspectRatio = if (size.height > 0 && size.width > 0) {
+        size.width * size.pixelWidthHeightRatio / size.height
+    } else {
+        16f / 9f
+    }
 
     return PlaybackSnapshot(
         title = currentTitle,
@@ -720,6 +834,11 @@ private fun Player?.toPlaybackSnapshot(): PlaybackSnapshot {
         positionMs = currentPosition.coerceAtLeast(0L),
         durationMs = resolvedDurationMs,
         bufferedMs = bufferedPosition.coerceAtLeast(0L),
+        isPlaying = isPlaying,
+        videoAspectRatio = aspectRatio,
+        errorMessage = playerError?.let { error ->
+            error.localizedMessage ?: error.errorCodeName
+        },
     )
 }
 
@@ -739,6 +858,9 @@ private data class PlaybackSnapshot(
     val positionMs: Long = 0L,
     val durationMs: Long = 0L,
     val bufferedMs: Long = 0L,
+    val isPlaying: Boolean = false,
+    val videoAspectRatio: Float = 16f / 9f,
+    val errorMessage: String? = null,
 ) {
     val playedFraction: Float
         get() = progressFraction(positionMs)

@@ -4,9 +4,9 @@ description: "Compact skill for Media3 inspector metadata, thumbnail/frame extra
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
-  version: "1.1"
+  version: "1.2"
   target_media3_version: "1.10.1"
-  last_reviewed: "2026-05-24"
+  last_reviewed: "2026-07-23"
   keywords:
     - android
     - media3
@@ -30,11 +30,14 @@ Use for metadata reads, thumbnails, frame extraction, and media inspection that 
 - Prefer server thumbnails or manifest thumbnail tracks for feeds.
 - Close extractor resources.
 - Do not decode frames during scroll unless cached and bounded.
+- **MUST** read metadata via `androidx.media3.inspector.MetadataRetriever` and `androidx.media3.inspector.MediaExtractorCompat`. The `androidx.media3.exoplayer.*` variants are deprecated in 1.10 and removed in 1.11.
+- **MUST** extract frames via the `media3-inspector-frame` module (`androidx.media3.inspector.frame.FrameExtractor`). Media3 1.10.0 removed `FrameExtractor` from `media3-inspector`.
 
 ## Example
 
 ```toml
 media3-inspector = { module = "androidx.media3:media3-inspector", version.ref = "media3" }
+media3-inspector-frame = { module = "androidx.media3:media3-inspector-frame", version.ref = "media3" }
 ```
 
 ## Related

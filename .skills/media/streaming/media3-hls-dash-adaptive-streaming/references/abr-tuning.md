@@ -9,8 +9,8 @@ import androidx.media3.common.TrackSelectionParameters
 
 enum class DeviceTier { PHONE_LOW, PHONE_MID, PHONE_HIGH, TABLET, TV }
 
-fun paramsFor(tier: DeviceTier, context: android.content.Context): TrackSelectionParameters =
-    TrackSelectionParameters.Builder(context).apply {
+fun paramsFor(tier: DeviceTier): TrackSelectionParameters =
+    TrackSelectionParameters.Builder().apply {
         when (tier) {
             DeviceTier.PHONE_LOW  -> { setMaxVideoSize(854, 480);   setMaxVideoBitrate(1_200_000) }
             DeviceTier.PHONE_MID  -> { setMaxVideoSize(1280, 720);  setMaxVideoBitrate(2_800_000) }
@@ -22,7 +22,7 @@ fun paramsFor(tier: DeviceTier, context: android.content.Context): TrackSelectio
     }.build()
 ```
 
-**DO NOT** set `setMaxVideoBitrate` below the lowest variant in the manifest. The selector resolves to zero tracks and playback fails.
+**DO NOT** set `setMaxVideoBitrate` below the lowest variant in the manifest. With the `DefaultTrackSelector` defaults (`exceedVideoConstraintsIfNecessary = true`) the constraints are exceeded and the lowest variant still plays, so the cap silently does nothing. Selection resolves to zero tracks and playback fails only if that flag was disabled.
 
 ## DefaultBandwidthMeter overrides
 
@@ -48,11 +48,11 @@ val meter = DefaultBandwidthMeter.Builder(context)
 | Live | 15_000 | 30_000 | 1_500 | 3_000 |
 | TV / stable Wi-Fi | 60_000 | 120_000 | 2_500 | 5_000 |
 
-**DO NOT** exceed `maxBufferMs = 300_000` on mobile. It starves heap and trips the 1.10.0 PreloadManager memory guard.
+**DO NOT** exceed `maxBufferMs = 300_000` on mobile. Oversized buffers pressure the heap. To bound preload memory, use the opt-in `DefaultLoadControl.Builder.setPlayerTargetBufferBytes` (added in Media3 1.9.0) together with `DefaultPreloadManager.Builder.setLoadControl`.
 
 ## Rules
 
 - **MUST** let Media3 pick variants. Hand-rolled `TrackSelectionOverride` breaks on manifest updates.
-- **MUST** include the `context` when building `TrackSelectionParameters`. The context-aware overload honors display capability.
+- **MUST** use the no-arg `TrackSelectionParameters.Builder()`. The `Builder(Context)` overload is deprecated in 1.10.1 and the context argument is ignored.
 - **PREFERRED** is tuning caps per device tier over per-user.
 - **DO NOT** lock the player to a single variant unless product policy requires it. Document the override if you do.

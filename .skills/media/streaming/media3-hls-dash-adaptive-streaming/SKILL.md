@@ -47,3 +47,5 @@ MediaItem.Builder()
 - `media3-bandwidth-abr`
 - `media3-live-streaming`
 - `media3-vod-playback`
+- [references/abr-tuning.md](references/abr-tuning.md) for ABR and buffer tuning detail
+- [references/manifest-errors.md](references/manifest-errors.md) for manifest failure classification and recovery
