@@ -14,7 +14,7 @@ Use this table when rewriting imports. Prefer a scripted rewrite (see `rewrite-i
 | `com.google.android.exoplayer2.Tracks` | `androidx.media3.common.Tracks` |
 | `com.google.android.exoplayer2.trackselection.*` | `androidx.media3.exoplayer.trackselection.*` |
 | `com.google.android.exoplayer2.ui.StyledPlayerView` | `androidx.media3.ui.PlayerView` |
-| `com.google.android.exoplayer2.ui.PlayerView` | `androidx.media3.ui.PlayerView` |
+| `com.google.android.exoplayer2.ui.PlayerView` | No Media3 equivalent. Migrate to `StyledPlayerView` first (see note below). |
 | `com.google.android.exoplayer2.ui.SubtitleView` | `androidx.media3.ui.SubtitleView` |
 | `com.google.android.exoplayer2.upstream.DefaultHttpDataSource` | `androidx.media3.datasource.DefaultHttpDataSource` |
 | `com.google.android.exoplayer2.upstream.cache.SimpleCache` | `androidx.media3.datasource.cache.SimpleCache` |
@@ -30,5 +30,9 @@ Use this table when rewriting imports. Prefer a scripted rewrite (see `rewrite-i
 | `com.google.android.exoplayer2.ui.PlayerNotificationManager` | Removed. Notification is emitted by `androidx.media3.session.MediaSessionService`. |
 | `com.google.android.exoplayer2.ext.cast.CastPlayer` | `androidx.media3.cast.CastPlayer` (rewritten API, `setLocalPlayer`) |
 | `com.google.android.exoplayer2.ext.ima.ImaAdsLoader` | `androidx.media3.exoplayer.ima.ImaAdsLoader` |
+
+## StyledPlayerView pre-step
+
+Media3 has no equivalent of the old ExoPlayer 2.x `PlayerView`. Per the official migration guide, replace every usage of `com.google.android.exoplayer2.ui.PlayerView` (and the `PlayerView` XML tag) with `com.google.android.exoplayer2.ui.StyledPlayerView` while still on ExoPlayer 2.x, verify behavior, and only then migrate: `StyledPlayerView` maps one-to-one to `androidx.media3.ui.PlayerView`.
 
 Any class under `com.google.android.exoplayer2.ext.*` that is not listed here is either removed or folded into a core Media3 module. Confirm against the Media3 release notes before assuming a one-to-one replacement exists.

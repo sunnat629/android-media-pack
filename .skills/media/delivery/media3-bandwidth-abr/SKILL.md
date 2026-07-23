@@ -4,9 +4,9 @@ description: "Compact skill for Media3 bandwidth estimation, ABR limits, load co
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
-  version: "1.1"
+  version: "1.2"
   target_media3_version: "1.10.1"
-  last_reviewed: "2026-05-24"
+  last_reviewed: "2026-07-23"
   keywords:
     - android
     - media3
@@ -34,10 +34,12 @@ Use for bitrate quality, startup stalls, low-quality playback, network-aware lim
 ## Example
 
 ```kotlin
-TrackSelectionParameters.Builder(context)
+TrackSelectionParameters.Builder()
     .setMaxVideoBitrate(6_000_000)
     .build()
 ```
+
+The `Context` overload of `TrackSelectionParameters.Builder` is deprecated; you **MUST** use the no-argument builder.
 
 ## Related
 

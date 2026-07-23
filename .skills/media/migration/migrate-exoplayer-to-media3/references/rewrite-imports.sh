@@ -2,6 +2,12 @@
 # rewrite-imports.sh
 #
 # Minimal helper to rewrite ExoPlayer 2.x imports to Media3.
+#
+# RECOMMENDED: use the official media3-migration.sh script from the
+# androidx/media repository (https://github.com/androidx/media) as the
+# canonical migration tool. It covers far more classes, Proguard rules, and
+# Gradle dependencies. This file is a compact fallback for quick rewrites.
+#
 # Run from the repository root. Review the diff before committing.
 #
 # Usage:
@@ -27,6 +33,7 @@ fi
 MAPPINGS=(
   "com.google.android.exoplayer2.ui.StyledPlayerView=androidx.media3.ui.PlayerView"
   "com.google.android.exoplayer2.SimpleExoPlayer=androidx.media3.exoplayer.ExoPlayer"
+  "com.google.android.exoplayer2.ExoPlayer=androidx.media3.exoplayer.ExoPlayer"
   "com.google.android.exoplayer2.source.hls=androidx.media3.exoplayer.hls"
   "com.google.android.exoplayer2.source.dash=androidx.media3.exoplayer.dash"
   "com.google.android.exoplayer2.source.smoothstreaming=androidx.media3.exoplayer.smoothstreaming"
@@ -39,6 +46,11 @@ MAPPINGS=(
   "com.google.android.exoplayer2.ui=androidx.media3.ui"
   "com.google.android.exoplayer2.ext.ima=androidx.media3.exoplayer.ima"
   "com.google.android.exoplayer2.ext.cast=androidx.media3.cast"
+  # MediaSessionConnector has no direct Media3 equivalent. The package rewrite
+  # below only fixes the import path; the code itself must be rebuilt on
+  # androidx.media3.session.MediaSession / MediaSessionService.
+  "com.google.android.exoplayer2.ext.mediasession=androidx.media3.session"
+  # Catch-all: MUST stay last. Everything above is more specific and runs first.
   "com.google.android.exoplayer2=androidx.media3.common"
 )
 

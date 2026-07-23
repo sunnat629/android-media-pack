@@ -10,7 +10,7 @@
 | `ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT` | Slow network | Same as above. |
 | `ERROR_CODE_IO_BAD_HTTP_STATUS` | 4xx / 5xx from origin | Inspect `HttpDataSourceException`. Do not retry 4xx. |
 | `ERROR_CODE_IO_INVALID_HTTP_CONTENT_TYPE` | Wrong MIME type at origin | Surface an origin-side issue. |
-| `ERROR_CODE_BEHIND_LIVE_WINDOW` | Player fell behind the live edge | `player.seekToDefaultPosition()` to snap back. |
+| `ERROR_CODE_BEHIND_LIVE_WINDOW` | Player fell behind the live edge | `player.seekToDefaultPosition()` then `player.prepare()`. The seek alone does not resume after an error. |
 | `ERROR_CODE_IO_NO_PERMISSION` | Auth expired or geo-blocked | Refresh credentials or show geo-block UI. |
 
 ## Handler
@@ -30,8 +30,10 @@ player.addListener(object : Player.Listener {
             PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ->
                 retryWithBackoff()
 
-            PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW ->
+            PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW -> {
                 player.seekToDefaultPosition()
+                player.prepare()
+            }
 
             PlaybackException.ERROR_CODE_IO_NO_PERMISSION ->
                 refreshCredentialsOrShowGeoBlock()

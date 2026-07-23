@@ -4,9 +4,9 @@ description: "Compact planning skill for Android XR media playback surfaces with
 license: Apache-2.0
 metadata:
   author: Shunnek Labs
-  version: "1.0"
+  version: "1.1"
   target_media3_version: "1.10.1"
-  last_reviewed: "2026-05-24"
+  last_reviewed: "2026-07-23"
   keywords:
     - android
     - media3
@@ -27,6 +27,8 @@ Use for Android XR media playback planning, immersive playback surfaces, spatial
 - Pin Media3 to `1.10.1` through the version catalog.
 - Keep Media3 player/session code in Android source sets.
 - Decide embedded vs immersive playback before coding controls.
+- For spatial video, render through Jetpack XR SDK SceneCore `SpatialExternalSurface` (or its 180/360 degree variants) with a Media3 `ExoPlayer` attached to the provided surface.
+- MV-HEVC spatial video playback requires Media3 1.6.0 or newer; the pinned `1.10.1` satisfies this.
 - Make controls usable with controller, hand, gaze, or system input supported by the target XR stack.
 - Provide a phone/tablet fallback path if XR APIs are unavailable.
 

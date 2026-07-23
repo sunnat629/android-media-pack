@@ -17,6 +17,16 @@ All notable changes to this pack are documented here. Format follows [Keep a Cha
 - Renamed `VERSION` to `MEDIA3_VERSION` to make clear it pins the Media3 target, not the pack version.
 - Linked previously orphaned `references/*.md` companions from the DRM, ExoPlayer migration, and HLS/DASH skills.
 - Sample app: state now survives rotation, UI state derives from `Player.Listener` instead of polling, playback errors surface with retry, and Media3 unstable API opt-ins are declared.
+- Internet-verified currency pass over all 31 skills against Media3 1.10.1 sources and current official guides:
+  - `media3-cast-integration`: `CastPlayer.Builder`/`RemoteCastPlayer.Builder` (constructors deprecated since 1.9.0), automatic local/remote transitions, `DefaultCastOptionsProvider` meta-data, `MediaTransferReceiver`.
+  - `media3-bandwidth-abr` and the HLS/DASH `abr-tuning.md` reference: no-arg `TrackSelectionParameters.Builder()` (the `Context` overload is deprecated and ignored); removed a false zero-tracks claim and an unsourced "PreloadManager memory guard" claim.
+  - `media3-workmanager-offline-ops`: rebuilt around `DownloadService`, `DownloadManager`, `DownloadRequest`, `DownloadIndex`, and `Requirements`, with `WorkManagerScheduler` in its real role and the targetSdk 35 `dataSync` 6-hour cap.
+  - `media3-tv-leanback-ui`: Compose for TV is now the primary path; Leanback and `media3-ui-leanback` are maintenance-only (androidx.leanback is deprecated).
+  - `media3-adaptive-compose-ui`: replaced deprecated `WindowWidthSizeClass` buckets with `currentWindowAdaptiveInfo()` breakpoint checks.
+  - `media3-inspector-metadata-thumbnails`: frame extraction now points at the `media3-inspector-frame` module and `androidx.media3.inspector.*` classes (exoplayer-package variants removed in 1.11).
+  - `manifest-errors.md`: `BEHIND_LIVE_WINDOW` recovery now calls `prepare()` after `seekToDefaultPosition()`.
+  - Migration references: corrected the `PlayerView` mapping (StyledPlayerView pre-step), fixed `rewrite-imports.sh` producing nonexistent `androidx.media3.common.ExoPlayer` imports, and corrected version attribution in the 1.10 API-changes notes.
+  - Clarity fixes: concrete SSAI one-per-playlist rule (ads), HttpEngine/Cronet stack priority (datasources), `FOREGROUND_SERVICE_MEDIA_PLAYBACK` and service intent-filters (background, Auto), JitPack requirement (MIDI), `APPLICATION_SS` MIME fallback (SmoothStreaming), pre-prepare seeks (VOD), SurfaceView-first surface rule (video), Jetpack XR `SpatialExternalSurface` anchors (XR).
 
 ### Removed
 
