@@ -5,7 +5,7 @@ The pack pins against **Media3 1.10.1** and the Android toolchain below. Skills 
 ## Supported toolchain
 
 | Component | Version |
-|---|---|
+| --- | --- |
 | **Media3** | 1.10.1 |
 | **minSdk** | 21 (Android 5.0) |
 | **compileSdk / targetSdk** | 35 (Android 15) recommended, 34 minimum |
@@ -22,20 +22,20 @@ The pack pins against **Media3 1.10.1** and the Android toolchain below. Skills 
 Skills are verified against:
 
 | API | Android | Notes |
-|-----|---------|-------|
+| ----- | --------- | ------- |
 | 21 | 5.0 | `minSdk` floor |
 | 28 | 9 | Pre-FGS-type baseline |
 | 33 | 13 | `POST_NOTIFICATIONS` runtime permission gate |
 | 34 | 14 | User-initiated foreground service rules, `foregroundServiceType` enforcement |
 | 35 | 15 | Latest default-on wake lock, Material3 dynamic color |
 
-## Out of scope for v1.x
+## Out of scope for v2.x
 
 - Low-latency live (LL-HLS, LL-DASH)
-- Offline downloads at the skill level
-- Transformer editing flows
 - WebRTC / WHIP integration (tracked as `not_planned`)
 - Any API marked `@ExperimentalApi` in Media3 1.10.1, including `CompositionPlayer`.
+
+Transformer editing (`media3-transformer-editing`) and WorkManager-backed offline operations (`media3-workmanager-offline-ops`) shipped in 2.0.0 and are no longer out of scope.
 
 ## Upgrade policy
 

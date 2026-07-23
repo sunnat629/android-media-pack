@@ -5,11 +5,14 @@ Curated list of trusted sources consulted when authoring and auditing skills in 
 ## Pack → Media3 version matrix
 
 | Pack version | Media3 | Tier shipped |
-|---|---|---|
-| Unreleased | 1.10.1 | Compact 19-skill refresh plus architecture |
-| 1.0.0 | 1.9.0 | Tier 1 (4 skills) |
-| 1.1.0 | 1.9.0 | Tier 2 (3 skills) |
+| --- | --- | --- |
+| 2.0.0 | 1.10.1 | 31 skills: protocols, devices, processing, testing expansion |
+| 1.5.0 | 1.10.1 | Compact 19-skill refresh, architecture skill, CLI installer, sample app |
+| 1.2.2 | 1.10.0 | Frontmatter-only Media3 pin bump |
+| 1.2.1 | 1.9.0 | Repository rename and README overhaul |
 | 1.2.0 | 1.9.0 | Tier 3 (11 skills) |
+| 1.1.0 | 1.9.0 | Tier 2 (3 skills) |
+| 1.0.0 | 1.9.0 | Tier 1 (4 skills) |
 
 Current main skills target **Media3 1.10.1**. For upstream Media3 release history, see the [Media3 release notes](https://developer.android.com/jetpack/androidx/releases/media3).
 
@@ -84,7 +87,6 @@ These are production or production-adjacent projects that are safe to consult fo
 
 Community posts change over time and **MUST NOT** be cited in a skill's RIGHT example without a canonical source as the primary reference.
 
-- Media3 1.9.0 "What's New" blog: https://android-developers.googleblog.com/2025/12/media3-190-whats-new.html
 - Media3 1.8.0 "What's New" (Toni Heidenreich): https://medium.com/google-exoplayer/media3-1-8-0-whats-new-b857435651b9
 - Low-latency live streaming with ExoPlayer (Toni Heidenreich): https://medium.com/google-exoplayer/low-latency-live-streaming-with-exoplayer-8552d5841060
 - Simplified bandwidth meter usage: https://medium.com/google-exoplayer/simplified-bandwidth-meter-usage-17d8189f978b
@@ -98,7 +100,7 @@ Community posts change over time and **MUST NOT** be cited in a skill's RIGHT ex
 
 - Mux Data SDK for Media3: https://www.mux.com/docs/guides/monitor-androidx-media3
 - Bitmovin Analytics Android Collector: https://developer.bitmovin.com/playback/docs/setup-analytics-android-v3
-- FastPix Data SDK for Media3: https://docs.fastpix.io/docs/monitor-androidx-media3
+- FastPix Data SDK for Media3: https://fastpix.com/docs/video-data/monitors/androidx-media3
 
 ## Source of truth policy
 

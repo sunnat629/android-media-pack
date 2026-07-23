@@ -54,14 +54,13 @@ When a skill cites an API, behavior, or version claim:
 
 If a community source contradicts the release notes, trust the release notes and file a `type-docs` Issue against the contradicting source.
 
-## Out of scope for v1.x
+## Out of scope for v2.x
 
-- `media3-low-latency-live`
-- `media3-offline-downloads`
-- `media3-transformer-editing`
+- `media3-low-latency-live` (LL-HLS, LL-DASH)
+- WebRTC / WHIP integration
 - Any API marked `@ExperimentalApi` in Media3 1.10.1, including `CompositionPlayer`.
 
-Post-v1.2 ideas become Tier 4 Feature Issues, not surprise skills.
+`media3-transformer-editing` and `media3-workmanager-offline-ops` shipped in 2.0.0 and are no longer out of scope. New skill ideas become Feature Issues first, not surprise skills.
 
 ## License and DCO
 

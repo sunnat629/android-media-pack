@@ -33,7 +33,7 @@ Common discovery phrases this pack answers:
 31 focused skills for the work media apps usually need:
 
 | Area | Use it for |
-|---|---|
+| --- | --- |
 | Architecture | KMP boundaries, player ownership, feeds, preload windows, offline-first data, telemetry contracts |
 | Migration | ExoPlayer 2.x to Media3, XML `PlayerView` to Compose UI |
 | Playback | video, audio, VOD, background playback, lifecycle state |
@@ -52,7 +52,7 @@ All skills are short, current, and task-shaped. They tell the agent what to insp
 Without this pack, an agent often burns context on broad search and mixed-era examples.
 
 | Task | Without skills | With this pack |
-|---|---|---|
+| --- | --- | --- |
 | Migrate ExoPlayer | Agent may mix `com.google.android.exoplayer2.*` with `androidx.media3.*` and chase old migration snippets. | `migrate-exoplayer-to-media3` gives the package boundary and current Media3 target first. |
 | Build Compose player UI | Agent may wrap old `PlayerView` in `AndroidView` by default. | `media3-compose-ui-material3` points at Media3 Compose UI, `ContentFrame`, player controls, and lifecycle-safe state. |
 | Make UI responsive | Agent may stretch a phone player across tablets, foldables, TV, Auto, or XR. | Adaptive and device skills split mobile/tablet/foldable UI from TV, Auto, and XR constraints. |
@@ -117,7 +117,7 @@ The installer replaces matching media skill folders in the destination. It does 
 ## Agent Paths
 
 | Agent | Project-local target |
-|---|---|
+| --- | --- |
 | GitHub Copilot, OpenCode, Gemini CLI, OpenAI Codex | `.agents/skills/<skill-name>/SKILL.md` |
 | Claude Code | `.claude/skills/<skill-name>/SKILL.md` |
 | Cursor | `.cursor/skills/<skill-name>/SKILL.md` |
@@ -145,7 +145,7 @@ The agent should load the matching skill and use it as task context.
 ## Skills
 
 | Skill | Best first use |
-|---|---|
+| --- | --- |
 | [`streaming-media-architecture`](.skills/media/streaming-media-architecture/SKILL.md) | Start here for KMP, feeds, ownership, preload, architecture |
 | [`migrate-exoplayer-to-media3`](.skills/media/migration/migrate-exoplayer-to-media3/SKILL.md) | Replace legacy ExoPlayer packages and APIs |
 | [`migrate-xml-ui-to-compose`](.skills/media/migration/migrate-xml-ui-to-compose/SKILL.md) | Move XML player UI to Compose |

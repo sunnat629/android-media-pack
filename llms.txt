@@ -68,7 +68,6 @@ This file is a retrieval index for LLMs and coding agents. It is not a robots po
 
 ## Optional
 
-- [Marketing prompts](https://github.com/sunnat629/android-media-pack/blob/main/MARKETING_PROMPTS.md): Social captions and image prompts for promoting the pack.
 - [Sample app](https://github.com/sunnat629/android-media-pack/tree/main/sampleApp): Compose Material3 demo with Media3 playback controls and stream choices.
 - [GitHub issues](https://github.com/sunnat629/android-media-pack/issues): Bugs and feature requests.
 - [GitHub discussions](https://github.com/sunnat629/android-media-pack/discussions): Questions and usage discussion.

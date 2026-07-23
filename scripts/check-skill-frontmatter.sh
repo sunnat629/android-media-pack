@@ -9,13 +9,13 @@
 # Also checks:
 #   - frontmatter block is present and properly closed
 #   - name matches the containing folder name
-#   - target_media3_version matches the pinned version in VERSION
+#   - target_media3_version matches the pinned version in MEDIA3_VERSION
 
 set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-pinned_media3="$(tr -d '[:space:]' < VERSION)"
+pinned_media3="$(tr -d '[:space:]' < MEDIA3_VERSION)"
 fail=0
 
 err() {
@@ -49,7 +49,7 @@ while IFS= read -r file; do
 
     fm_media3=$(printf '%s\n' "$fm" | awk -F'"' '/target_media3_version:/ {print $2; exit}')
     if [ "$fm_media3" != "$pinned_media3" ]; then
-        err "$file" "target_media3_version '$fm_media3' does not match pinned VERSION '$pinned_media3'"
+        err "$file" "target_media3_version '$fm_media3' does not match pinned MEDIA3_VERSION '$pinned_media3'"
     fi
 done < <(find .skills/media -name SKILL.md -type f | sort)
 

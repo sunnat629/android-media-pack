@@ -5,3 +5,7 @@
 sampleApp/.gradle/
 sampleApp/build/
 sampleApp/app/build/
+
+# Local marketing material, not part of the shipped pack
+MARKETING_PROMPTS.md
+promptImage/
